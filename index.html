@@ -3,13 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بيانات اتصال مالك القطة الضائعة - تخزين سحابي</title>
+    <title>بيانات اتصال مالك القطة الضائعة</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/11.8.1/firebase-analytics.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js"></script>
     <style>
         :root {
             --primary: #6a11cb;
@@ -20,7 +16,6 @@
             --success: #20bf6b;
             --card-bg: rgba(255, 255, 255, 0.95);
             --cat-color: #ff9e7d;
-            --cloud-color: #4db6ac;
         }
         
         * {
@@ -144,7 +139,6 @@
             border-radius: 10px;
         }
         
-        /* استايل نموذج الإدخال */
         .form-container {
             display: flex;
             flex-direction: column;
@@ -235,7 +229,6 @@
             margin-left: 8px;
         }
         
-        /* استايل عرض البيانات */
         .data-container {
             display: none;
             flex-direction: column;
@@ -466,40 +459,6 @@
             line-height: 1.6;
         }
         
-        .cloud-icon {
-            color: var(--cloud-color);
-            font-size: 1.5rem;
-            margin-left: 10px;
-            vertical-align: middle;
-            animation: cloudFloat 3s infinite ease-in-out;
-        }
-        
-        @keyframes cloudFloat {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
-        }
-        
-        .loading {
-            display: none;
-            text-align: center;
-            padding: 20px;
-        }
-        
-        .loading-spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid rgba(106, 17, 203, 0.2);
-            border-top: 4px solid var(--primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 15px;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
         @media (max-width: 480px) {
             .header h1 {
                 font-size: 2rem;
@@ -531,6 +490,27 @@
                 font-size: 1.4rem;
             }
         }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-10px); }
+            40%, 80% { transform: translateX(10px); }
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes fadeOut {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(-20px); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
@@ -538,24 +518,17 @@
     <div class="floating-element circle" style="top: 10%; left: 5%; animation-duration: 20s;"></div>
     <div class="floating-element cat-paw" style="top: 70%; left: 80%; animation-duration: 25s; animation-delay: -5s;"></div>
     <div class="floating-element circle" style="top: 40%; left: 85%; width: 70px; height: 70px; animation-duration: 18s; animation-delay: -3s;"></div>
-    <div class="floating-element circle" style="top: 80%; left: 15%; width: 120px; height: 120px; background: linear-gradient(45deg, var(--cloud-color), #80deea); animation-duration: 22s; animation-delay: -2s;"></div>
     
     <div class="container">
         <div class="header">
-            <h1>قطتي الضائعة <i class="fas fa-cloud cloud-icon"></i></h1>
-            <p>بيانات الاتصال مخزنة سحابياً - متاحة من أي جهاز</p>
+            <h1>قطتي الضائعة</h1>
+            <p>إذا وجدت قطتي الضائعة، الرجاء الاتصال بي على البيانات التالية</p>
         </div>
         
         <div class="content">
-            <!-- مؤشر التحميل -->
-            <div class="loading" id="loading">
-                <div class="loading-spinner"></div>
-                <p>جاري تحميل البيانات السحابية...</p>
-            </div>
-            
             <!-- نموذج الإدخال للزيارة الأولى -->
             <div class="form-container" id="formContainer">
-                <h2>بيانات الاتصال <i class="fas fa-cloud cloud-icon"></i></h2>
+                <h2>بيانات الاتصال</h2>
                 <div class="input-group">
                     <label for="name"><i class="fas fa-user"></i> اسمك:</label>
                     <div class="input-wrapper">
@@ -578,7 +551,7 @@
                 </div>
                 
                 <button class="btn" id="saveBtn">
-                    حفظ البيانات سحابياً <i class="fas fa-cloud-upload-alt"></i>
+                    حفظ البيانات <i class="fas fa-save"></i>
                 </button>
             </div>
             
@@ -588,7 +561,7 @@
                     <i class="fas fa-cat"></i>
                 </div>
                 
-                <h2 class="welcome-text">شكرًا لك! <i class="fas fa-cloud cloud-icon"></i></h2>
+                <h2 class="welcome-text">شكرًا لك!</h2>
                 <p class="contact-instruction">إذا وجدت قطتي، الرجاء الاتصال بي على:</p>
                 
                 <div class="user-info">
@@ -609,141 +582,75 @@
                 </div>
                 
                 <button class="action-btn" id="editBtn">
-                    <i class="fas fa-edit"></i> تعديل البيانات السحابية
+                    <i class="fas fa-edit"></i> تعديل البيانات
                 </button>
             </div>
         </div>
         
         <div class="footer">
-            تم التطوير لمساعدة من يجد القطط الضائعة | التخزين السحابي الآمن للمعلومات
+            تم التطوير بواسطة @khalifaaa444 | التخزين العام للمتصفح
         </div>
     </div>
     
     <script>
-        // Firebase configuration (fixed to match your actual project)
-        const firebaseConfig = {
-            apiKey: "AIzaSyASCfglLeEmbrrXP9mJCDwwUtQNsIzU_T8",
-            authDomain: "lost-cat-contact-1.firebaseapp.com",
-            projectId: "lost-cat-contact-1",
-            storageBucket: "lost-cat-contact-1.appspot.com",
-            messagingSenderId: "890585328636",
-            appId: "1:890585328636:web:e1d1b4d818748c3efde079",
-            measurementId: "G-LLZTVNNEDY"
+        // IndexedDB initialization
+        let db;
+        const DB_NAME = 'CatFinderDB';
+        const STORE_NAME = 'userInfo';
+        const DB_VERSION = 1;
+
+        // Initialize IndexedDB
+        const initDB = () => {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(DB_NAME, DB_VERSION);
+                
+                request.onerror = () => {
+                    console.error("Error opening DB");
+                    reject(request.error);
+                };
+                
+                request.onsuccess = () => {
+                    db = request.result;
+                    resolve(db);
+                };
+                
+                request.onupgradeneeded = (event) => {
+                    const db = event.target.result;
+                    if (!db.objectStoreNames.contains(STORE_NAME)) {
+                        db.createObjectStore(STORE_NAME, { keyPath: 'id' });
+                    }
+                };
+            });
         };
 
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        firebase.analytics();
-        const db = firebase.firestore();
-        
-        // Reference to the contact document
-        const contactRef = db.collection('contacts').doc('catOwner');
-        
-        // Elements
-        const formContainer = document.getElementById('formContainer');
-        const dataContainer = document.getElementById('dataContainer');
-        const loadingElement = document.getElementById('loading');
-        const displayName = document.getElementById('displayName');
-        const displayPhone = document.getElementById('displayPhone');
-        const saveBtn = document.getElementById('saveBtn');
-        const editBtn = document.getElementById('editBtn');
-        
-        // Show loading indicator
-        function showLoading() {
-            formContainer.style.display = 'none';
-            dataContainer.style.display = 'none';
-            loadingElement.style.display = 'block';
-        }
-        
-        // Hide loading indicator
-        function hideLoading() {
-            loadingElement.style.display = 'none';
-        }
-        
-        // Show form
-        function showForm() {
-            formContainer.style.display = 'flex';
-            dataContainer.style.display = 'none';
-        }
-        
-        // Show data
-        function showData(name, phone) {
-            formContainer.style.display = 'none';
-            dataContainer.style.display = 'flex';
-            displayName.textContent = name;
-            displayPhone.textContent = phone;
-        }
-        
-        // Get contact data from Firestore
-        function getContactData() {
-            showLoading();
-            
-            contactRef.get().then((doc) => {
-                hideLoading();
+        // Helper function to save data
+        const saveData = async (data) => {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([STORE_NAME], 'readwrite');
+                const store = transaction.objectStore(STORE_NAME);
                 
-                if (doc.exists) {
-                    const data = doc.data();
-                    if (data.name && data.phone) {
-                        showData(data.name, data.phone);
-                    } else {
-                        showForm();
-                    }
-                } else {
-                    showForm();
-                }
-            }).catch((error) => {
-                console.error("Error getting document:", error);
-                hideLoading();
-                showForm();
-                showError('فشل في تحميل البيانات: ' + error.message);
+                const request = store.put({ id: 'userData', ...data });
+                
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => reject(request.error);
             });
-        }
-        
-        // Save contact data to Firestore
-        function saveContactData(name, phone) {
-            showLoading();
-            
-            contactRef.set({
-                name: name,
-                phone: phone,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            }).then(() => {
-                hideLoading();
-                showData(name, phone);
-                showSuccess('تم حفظ البيانات السحابية بنجاح!');
-            }).catch((error) => {
-                console.error("Error saving document:", error);
-                hideLoading();
-                showError('فشل في حفظ البيانات: ' + error.message);
+        };
+
+        // Helper function to get data
+        const getData = async () => {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([STORE_NAME], 'readonly');
+                const store = transaction.objectStore(STORE_NAME);
+                
+                const request = store.get('userData');
+                
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => reject(request.error);
             });
-        }
-        
-        // Show success message
-        function showSuccess(message) {
-            const alertMsg = document.createElement('div');
-            alertMsg.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
-            alertMsg.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: var(--success);
-                color: white;
-                padding: 15px 25px;
-                border-radius: 10px;
-                box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-                z-index: 1000;
-                animation: slideIn 0.5s, fadeOut 0.5s 3s;
-            `;
-            
-            document.body.appendChild(alertMsg);
-            
-            setTimeout(() => {
-                alertMsg.remove();
-            }, 3500);
-        }
-        
-        // Show error message
-        function showError(message) {
+        };
+
+        // Helper function to show alerts
+        function showAlert(message) {
             const alertMsg = document.createElement('div');
             alertMsg.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
             alertMsg.style.cssText = `
@@ -756,85 +663,94 @@
                 border-radius: 10px;
                 box-shadow: 0 5px 15px rgba(0,0,0,0.2);
                 z-index: 1000;
-                animation: slideIn 0.5s;
+                animation: slideIn 0.5s, fadeOut 0.5s 2.5s;
             `;
             
             document.body.appendChild(alertMsg);
             
             setTimeout(() => {
-                alertMsg.style.animation = 'fadeOut 0.5s';
-                setTimeout(() => alertMsg.remove(), 500);
-            }, 4000);
+                alertMsg.remove();
+            }, 3000);
         }
-        
-        // Initialize when DOM is loaded
-        document.addEventListener('DOMContentLoaded', function() {
-            // Get contact data on page load
-            getContactData();
-            
-            // Save button event
-            saveBtn.addEventListener('click', function() {
-                const name = document.getElementById('name').value;
-                const phone = document.getElementById('phone').value;
+
+        // Main application logic
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                // Initialize IndexedDB
+                await initDB();
                 
-                if (name && phone) {
-                    saveContactData(name, phone);
+                const formContainer = document.getElementById('formContainer');
+                const dataContainer = document.getElementById('dataContainer');
+                const displayName = document.getElementById('displayName');
+                const displayPhone = document.getElementById('displayPhone');
+                
+                // Get data from IndexedDB
+                const userData = await getData();
+                
+                if (userData && userData.userName && userData.userPhone) {
+                    // Display data if it exists
+                    formContainer.style.display = 'none';
+                    dataContainer.style.display = 'flex';
+                    displayName.textContent = userData.userName;
+                    displayPhone.textContent = userData.userPhone;
                 } else {
-                    // Highlight empty fields
-                    const inputs = document.querySelectorAll('input');
-                    inputs.forEach(input => {
-                        if (!input.value) {
-                            input.style.borderColor = 'var(--accent)';
-                            input.style.animation = 'shake 0.5s';
+                    // Show form if no data exists
+                    formContainer.style.display = 'flex';
+                    dataContainer.style.display = 'none';
+                }
+                
+                // Save button click handler
+                document.getElementById('saveBtn').addEventListener('click', async function() {
+                    const name = document.getElementById('name').value;
+                    const phone = document.getElementById('phone').value;
+                    
+                    if (name && phone) {
+                        try {
+                            // Save to IndexedDB
+                            await saveData({ userName: name, userPhone: phone });
+                            
+                            // Show success message
+                            const btn = this;
+                            btn.innerHTML = '<i class="fas fa-check"></i> تم الحفظ!';
+                            btn.style.background = 'linear-gradient(90deg, var(--success), #01c896)';
                             
                             setTimeout(() => {
-                                input.style.animation = '';
-                            }, 500);
+                                btn.innerHTML = 'حفظ البيانات <i class="fas fa-save"></i>';
+                                btn.style.background = 'linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%)';
+                                
+                                // Display the data
+                                formContainer.style.display = 'none';
+                                dataContainer.style.display = 'flex';
+                                displayName.textContent = name;
+                                displayPhone.textContent = phone;
+                            }, 1500);
+                        } catch (error) {
+                            console.error('Error saving data:', error);
+                            showAlert('حدث خطأ أثناء حفظ البيانات');
                         }
-                    });
-                    
-                    showError('الرجاء إدخال جميع البيانات المطلوبة');
-                }
-            });
-            
-            // Edit button event
-            editBtn.addEventListener('click', function() {
-                contactRef.get().then((doc) => {
-                    if (doc.exists) {
-                        const data = doc.data();
-                        document.getElementById('name').value = data.name || '';
-                        document.getElementById('phone').value = data.phone || '';
+                    } else {
+                        // Show validation error
+                        const inputs = document.querySelectorAll('input');
+                        inputs.forEach(input => {
+                            if (!input.value) {
+                                input.style.borderColor = 'var(--accent)';
+                                input.style.animation = 'shake 0.5s';
+                                
+                                setTimeout(() => {
+                                    input.style.animation = '';
+                                }, 500);
+                            }
+                        });
+                        
+                        showAlert('الرجاء إدخال جميع البيانات المطلوبة');
                     }
-                    showForm();
                 });
-            });
-        });
-        
-        // Add animation styles
-        const style = document.createElement('style');
-        style.innerHTML = `
-            @keyframes shake {
-                0%, 100% { transform: translateX(0); }
-                20%, 60% { transform: translateX(-10px); }
-                40%, 80% { transform: translateX(10px); }
-            }
-            
-            @keyframes slideIn {
-                from { transform: translateX(100px); opacity: 0; }
-                to { transform: translateX(0); opacity: 1; }
-            }
-            
-            @keyframes fadeOut {
-                from { opacity: 1; transform: translateY(0); }
-                to { opacity: 0; transform: translateY(-20px); }
-            }
-            
-            @keyframes fadeIn {
-                from { opacity: 0; transform: translateY(-20px); }
-                to { opacity: 1; transform: translateY(0); }
-            }
-        `;
-        document.head.appendChild(style);
-    </script>
-</body>
-</html>
+                
+                // Edit button click handler
+                document.getElementById('editBtn').addEventListener('click', async function() {
+                    dataContainer.style.animation = 'fadeOut 0.5s';
+                    
+                    setTimeout(async () => {
+                        formContainer.style.display = 'flex';
+                        dataContainer.style.display = 'none';
+                        dataContainer
