@@ -620,19 +620,20 @@
     </div>
     
     <script>
-        // Firebase configuration
+        // Firebase configuration (fixed to match your actual project)
         const firebaseConfig = {
             apiKey: "AIzaSyASCfglLeEmbrrXP9mJCDwwUtQNsIzU_T8",
             authDomain: "lost-cat-contact-1.firebaseapp.com",
             projectId: "lost-cat-contact-1",
-            storageBucket: "lost-cat-contact-1.firebasestorage.app",
+            storageBucket: "lost-cat-contact-1.appspot.com",
             messagingSenderId: "890585328636",
-            appId: "1:890585328636:web:74e21fefc868dca4fde079"
+            appId: "1:890585328636:web:e1d1b4d818748c3efde079",
+            measurementId: "G-LLZTVNNEDY"
         };
-  
-  
+
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
+        firebase.analytics();
         const db = firebase.firestore();
         
         // Reference to the contact document
@@ -691,6 +692,7 @@
                     showForm();
                 }
             }).catch((error) => {
+                console.error("Error getting document:", error);
                 hideLoading();
                 showForm();
                 showError('فشل في تحميل البيانات: ' + error.message);
@@ -710,6 +712,7 @@
                 showData(name, phone);
                 showSuccess('تم حفظ البيانات السحابية بنجاح!');
             }).catch((error) => {
+                console.error("Error saving document:", error);
                 hideLoading();
                 showError('فشل في حفظ البيانات: ' + error.message);
             });
