@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بيانات اتصال</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDAaBVq8Cje-XYuNjxgJZkuKlGZlbCPwQI",
+            authDomain: "lostcattest-1.firebaseapp.com",
+            projectId: "lostcattest-1",
+            storageBucket: "lostcattest-1.appspot.com",
+            messagingSenderId: "801235048233",
+            appId: "1:801235048233:web:39f8ced879ea0dd3e70938"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        
+        // Make Firestore available globally
+        window.firestore = {
+            db,
+            doc,
+            getDoc,
+            setDoc
+        };
+    </script>
+    <style>
+        :root {
+            --primary: #6a11cb;
+            --secondary: #2575fc;
+            --accent: #ff6b6b;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #20bf6b;
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --cat-color: #ff9e7d;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: var(--dark);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+        }
+        
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: var(--card-bg);
+            border-radius: 25px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+            transition: all 0.5s ease;
+            position: relative;
+            z-index: 2;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .container::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        .header {
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 35px 25px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+            opacity: 0.2;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            position: relative;
+            z-index: 2;
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 80%;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .content {
+            padding: 35px 30px;
+            position: relative;
+        }
+        
+        .form-container, .data-container {
+            transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        
+        .form-container h2, .welcome-text {
+            text-align: center;
+            margin-bottom: 25px;
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 1.8rem;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        .form-container h2::after, .welcome-text::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            right: 50%;
+            transform: translateX(50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 10px;
+        }
+        
+        /* استايل نموذج الإدخال */
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .input-group label {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #555;
+            padding-right: 10px;
+        }
+        
+        .input-wrapper {
+            position: relative;
+        }
+        
+        .input-group input {
+            padding: 16px 50px 16px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
+        }
+        
+        .input-group input:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(106, 17, 203, 0.15);
+        }
+        
+        .input-icon {
+            position: absolute;
+            top: 50%;
+            left: 18px;
+            transform: translateY(-50%);
+            color: #aaa;
+            font-size: 1.2rem;
+        }
+        
+        .btn {
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(106, 17, 203, 0.2);
+        }
+        
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -60%;
+            width: 40%;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(25deg);
+            transition: all 0.6s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 25px rgba(106, 17, 203, 0.3);
+        }
+        
+        .btn:hover::after {
+            left: 120%;
+        }
+        
+        .btn i {
+            margin-left: 8px;
+        }
+        
+        /* استايل عرض البيانات */
+        .data-container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            text-align: center;
+        }
+        
+        .avatar {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: -75px;
+            border: 5px solid white;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 3;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0px rgba(106, 17, 203, 0.5); }
+            100% { box-shadow: 0 0 0 20px rgba(106, 17, 203, 0); }
+        }
+        
+        .avatar i {
+            font-size: 3.8rem;
+            color: white;
+        }
+        
+        .user-info {
+            width: 100%;
+        }
+        
+        .info-card {
+            background: white;
+            border-radius: 18px;
+            padding: 22px;
+            margin: 18px 0;
+            text-align: right;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            border-right: 5px solid var(--primary);
+            transition: transform 0.4s, box-shadow 0.4s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .info-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--primary), var(--secondary));
+        }
+        
+        .info-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .info-card h3 {
+            color: var(--primary);
+            margin-bottom: 12px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .info-card h3 i {
+            font-size: 1.2rem;
+        }
+        
+        .info-card p {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--dark);
+            direction: ltr;
+        }
+        
+        .welcome-text {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-top: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .action-btn {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            padding: 14px 30px;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 5px 15px rgba(106, 17, 203, 0.1);
+        }
+        
+        .action-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(106, 17, 203, 0.25);
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 22px;
+            color: #777;
+            font-size: 0.95rem;
+            border-top: 1px solid #eee;
+            background: rgba(248, 249, 250, 0.8);
+        }
+        
+        .floating-element {
+            position: absolute;
+            z-index: 1;
+            opacity: 0.3;
+            animation: float 15s infinite linear;
+        }
+        
+        .circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--accent), var(--cat-color));
+        }
+        
+        .triangle {
+            width: 0;
+            height: 0;
+            border-left: 50px solid transparent;
+            border-right: 50px solid transparent;
+            border-bottom: 87px solid var(--success);
+        }
+        
+        .cat-paw {
+            width: 80px;
+            height: 80px;
+            background: var(--cat-color);
+            border-radius: 50%;
+            position: relative;
+        }
+        
+        .cat-paw::before,
+        .cat-paw::after {
+            content: "";
+            position: absolute;
+            background: var(--cat-color);
+            border-radius: 50%;
+        }
+        
+        .cat-paw::before {
+            width: 50px;
+            height: 50px;
+            top: -20px;
+            left: 15px;
+        }
+        
+        .cat-paw::after {
+            width: 50px;
+            height: 50px;
+            top: -20px;
+            right: 15px;
+        }
+        
+        .cat-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 30px;
+            height: 30px;
+            background: white;
+            border-radius: 50%;
+        }
+        
+        @keyframes float {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(20px, 40px) rotate(90deg); }
+            50% { transform: translate(40px, 0) rotate(180deg); }
+            75% { transform: translate(20px, -40px) rotate(270deg); }
+            100% { transform: translate(0, 0) rotate(360deg); }
+        }
+        
+        .contact-instruction {
+            text-align: center;
+            margin-top: -15px;
+            margin-bottom: 25px;
+            color: #555;
+            font-size: 1.1rem;
+            padding: 0 20px;
+        }
+        
+        .storage-info {
+            background: #e8f4ff;
+            border-radius: 12px;
+            padding: 12px;
+            margin-top: 20px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #2c6db3;
+            border: 1px solid #a9d0ff;
+        }
+        
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(106, 17, 203, 0.2);
+            border-radius: 50%;
+            border-top: 4px solid var(--primary);
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .header p {
+                font-size: 1rem;
+            }
+            
+            .content {
+                padding: 25px 20px;
+            }
+            
+            .avatar {
+                width: 110px;
+                height: 110px;
+                margin-top: -65px;
+            }
+            
+            .avatar i {
+                font-size: 3rem;
+            }
+            
+            .welcome-text {
+                font-size: 1.7rem;
+            }
+            
+            .info-card p {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- عناصر عائمة للخلفية -->
+    <div class="floating-element circle" style="top: 10%; left: 5%; animation-duration: 20s;"></div>
+    <div class="floating-element cat-paw" style="top: 70%; left: 80%; animation-duration: 25s; animation-delay: -5s;"></div>
+    <div class="floating-element circle" style="top: 40%; left: 85%; width: 70px; height: 70px; animation-duration: 18s; animation-delay: -3s;"></div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>بيانات الاتصال</h1>
+            <p>الرجاء الاتصال بي على البيانات التالية</p>
+        </div>
+        
+        <div class="content">
+            <!-- نموذج الإدخال للزيارة الأولى -->
+            <div class="form-container" id="formContainer">
+                <h2>بيانات الاتصال</h2>
+                <div class="input-group">
+                    <label for="name"><i class="fas fa-user"></i> اسمك:</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="name" placeholder="أدخل اسمك هنا" required>
+                        <div class="input-icon"><i class="fas fa-signature"></i></div>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="phone"><i class="fas fa-mobile-alt"></i> رقم هاتفك:</label>
+                    <div class="input-wrapper">
+                        <input type="tel" id="phone" placeholder="أدخل رقم هاتفك" required>
+                        <div class="input-icon"><i class="fas fa-phone"></i></div>
+                    </div>
+                </div>
+                
+                <button class="btn" id="saveBtn">
+                    حفظ البيانات <i class="fas fa-save"></i>
+                </button>
+                
+                <div class="storage-info">
+                    <i class="fas fa-database"></i> يتم تخزين البيانات باستخدام Firestore للتخزين السحابي الآمن
+                </div>
+            </div>
+            
+            <!-- عرض البيانات للزيارات التالية -->
+            <div class="data-container" id="dataContainer">
+                <div class="avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                
+                <h2 class="welcome-text">بيانات الاتصال</h2>
+                
+                <div class="user-info">
+                    <div class="info-card">
+                        <h3><i class="fas fa-user-tag"></i> اسمي:</h3>
+                        <p id="displayName">محمد أحمد</p>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h3><i class="fas fa-phone-alt"></i> رقم هاتفي:</h3>
+                        <p id="displayPhone">+966 50 123 4567</p>
+                    </div>
+                </div>
+                
+                <div class="storage-info">
+                    <i class="fas fa-database"></i> يتم تخزين البيانات باستخدام Firestore للتخزين السحابي الآمن
+                </div>
+            </div>
+            
+            <!-- حالة التحميل -->
+            <div class="loading" id="loading" style="display: none;">
+                <div class="spinner"></div>
+                <span style="margin-right: 10px;">جاري تحميل البيانات...</span>
+            </div>
+        </div>
+        
+        <div class="footer">
+            تم التطوير لمساعدة من يجد القطط الضائعة | التخزين باستخدام Firestore
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Wait for Firebase to initialize
+            while (!window.firestore) {
+                await new Promise(resolve => setTimeout(resolve, 100));
+            }
+            
+            const { db, doc, getDoc, setDoc } = window.firestore;
+            
+            const formContainer = document.getElementById('formContainer');
+            const dataContainer = document.getElementById('dataContainer');
+            const loading = document.getElementById('loading');
+            const displayName = document.getElementById('displayName');
+            const displayPhone = document.getElementById('displayPhone');
+            const nameInput = document.getElementById('name');
+            const phoneInput = document.getElementById('phone');
+            const saveBtn = document.getElementById('saveBtn');
+            
+            // Reference to Firestore document
+            const docRef = doc(db, "catOwners", "currentOwner1");
+            
+            // Show loading state
+            formContainer.style.display = 'none';
+            dataContainer.style.display = 'none';
+            loading.style.display = 'flex';
+            
+            try {
+                // Try to get data from Firestore
+                const docSnap = await getDoc(docRef);
+                
+                if (docSnap.exists()) {
+                    // Data exists - show data container
+                    const data = docSnap.data();
+                    displayName.textContent = data.name || 'غير متوفر';
+                    displayPhone.textContent = data.phone || 'غير متوفر';
+                    dataContainer.style.display = 'flex';
+                } else {
+                    // No data - show form
+                    formContainer.style.display = 'flex';
+                }
+            } catch (error) {
+                // Error handling
+                console.error("حدث خطأ في جلب البيانات:", error);
+                
+                // Show error message
+                const errorMsg = document.createElement('div');
+                errorMsg.innerHTML = '<i class="fas fa-exclamation-triangle"></i> فشل في تحميل البيانات، الرجاء المحاولة لاحقًا';
+                errorMsg.style.cssText = `
+                    background: var(--accent);
+                    color: white;
+                    padding: 15px;
+                    border-radius: 10px;
+                    text-align: center;
+                    margin: 20px;
+                    font-weight: bold;
+                `;
+                document.querySelector('.content').appendChild(errorMsg);
+                
+                // Show form as fallback
+                formContainer.style.display = 'flex';
+            } finally {
+                // Hide loading state
+                loading.style.display = 'none';
+            }
+            
+            // Save button event listener
+            saveBtn.addEventListener('click', async function() {
+                const name = nameInput.value;
+                const phone = phoneInput.value;
+                
+                if (!name || !phone) {
+                    // Show error animation
+                    const inputs = document.querySelectorAll('input');
+                    inputs.forEach(input => {
+                        if (!input.value) {
+                            input.style.borderColor = 'var(--accent)';
+                            input.style.animation = 'shake 0.5s';
+                            
+                            setTimeout(() => {
+                                input.style.animation = '';
+                            }, 500);
+                        }
+                    });
+                    
+                    // Create alert message
+                    const alertMsg = document.createElement('div');
+                    alertMsg.innerHTML = '<i class="fas fa-exclamation-circle"></i> الرجاء إدخال جميع البيانات المطلوبة';
+                    alertMsg.style.cssText = `
+                        position: fixed;
+                        top: 20px;
+                        right: 20px;
+                        background: var(--accent);
+                        color: white;
+                        padding: 15px 25px;
+                        border-radius: 10px;
+                        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                        z-index: 1000;
+                        animation: slideIn 0.5s, fadeOut 0.5s 2.5s;
+                    `;
+                    
+                    document.body.appendChild(alertMsg);
+                    
+                    setTimeout(() => {
+                        alertMsg.remove();
+                    }, 3000);
+                    return;
+                }
+                
+                try {
+                    // Show saving state
+                    const originalBtnText = saveBtn.innerHTML;
+                    saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الحفظ...';
+                    saveBtn.disabled = true;
+                    
+                    // Save to Firestore
+                    await setDoc(docRef, {
+                        name: name,
+                        phone: phone,
+                        timestamp: new Date()
+                    });
+                    
+                    // Show success animation
+                    saveBtn.innerHTML = '<i class="fas fa-check"></i> تم الحفظ!';
+                    saveBtn.style.background = 'linear-gradient(90deg, var(--success), #01c896)';
+                    
+                    setTimeout(() => {
+                        // Reset button
+                        saveBtn.innerHTML = originalBtnText;
+                        saveBtn.style.background = 'linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%)';
+                        saveBtn.disabled = false;
+                        
+                        // Show data container
+                        formContainer.style.display = 'none';
+                        dataContainer.style.display = 'flex';
+                        displayName.textContent = name;
+                        displayPhone.textContent = phone;
+                    }, 1500);
+                } catch (error) {
+                    console.error("حدث خطأ في حفظ البيانات:", error);
+                    
+                    // Show error message
+                    const alertMsg = document.createElement('div');
+                    alertMsg.innerHTML = '<i class="fas fa-exclamation-triangle"></i> فشل في حفظ البيانات، الرجاء المحاولة لاحقًا';
+                    alertMsg.style.cssText = `
+                        position: fixed;
+                        top: 20px;
+                        right: 20px;
+                        background: var(--accent);
+                        color: white;
+                        padding: 15px 25px;
+                        border-radius: 10px;
+                        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                        z-index: 1000;
+                    `;
+                    
+                    document.body.appendChild(alertMsg);
+                    
+                    setTimeout(() => {
+                        alertMsg.remove();
+                    }, 3000);
+                    
+                    // Reset button
+                    saveBtn.innerHTML = originalBtnText;
+                    saveBtn.disabled = false;
+                }
+            });
+            
+            // Add animation styles
+            const style = document.createElement('style');
+            style.innerHTML = `
+                @keyframes shake {
+                    0%, 100% { transform: translateX(0); }
+                    20%, 60% { transform: translateX(-10px); }
+                    40%, 80% { transform: translateX(10px); }
+                }
+                
+                @keyframes slideIn {
+                    from { transform: translateX(100px); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+                
+                @keyframes fadeOut {
+                    from { opacity: 1; transform: translateY(0); }
+                    to { opacity: 0; transform: translateY(-20px); }
+                }
+                
+                @keyframes fadeIn {
+                    from { opacity: 0; transform: translateY(-20px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+            `;
+            document.head.appendChild(style);
+        });
+    </script>
+</body>
+</html>
