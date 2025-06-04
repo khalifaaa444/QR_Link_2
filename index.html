@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بيانات اتصال</title>
+    <title>بيانات اتصال قططية</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
     <!-- Firebase SDK -->
@@ -44,6 +44,7 @@
             --success: #20bf6b;
             --card-bg: rgba(255, 255, 255, 0.95);
             --cat-color: #ff9e7d;
+            --cat-paw: #fca5a5;
         }
         
         * {
@@ -54,7 +55,7 @@
         }
         
         body {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            background: linear-gradient(135deg, #4a1c6f 0%, #1a4d8c 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -63,6 +64,7 @@
             color: var(--dark);
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
+            overflow-x: hidden;
         }
         
         @keyframes gradientBG {
@@ -185,6 +187,9 @@
             font-size: 1.1rem;
             color: #555;
             padding-right: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         
         .input-wrapper {
@@ -231,6 +236,10 @@
             position: relative;
             overflow: hidden;
             box-shadow: 0 10px 20px rgba(106, 17, 203, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
         }
         
         .btn::after {
@@ -411,16 +420,17 @@
         .cat-paw {
             width: 80px;
             height: 80px;
-            background: var(--cat-color);
+            background: var(--cat-paw);
             border-radius: 50%;
             position: relative;
+            animation: pulse 2s infinite;
         }
         
         .cat-paw::before,
         .cat-paw::after {
             content: "";
             position: absolute;
-            background: var(--cat-color);
+            background: var(--cat-paw);
             border-radius: 50%;
         }
         
@@ -498,6 +508,268 @@
             100% { transform: rotate(360deg); }
         }
         
+        /* تصميم القطة التفاعلية */
+        .interactive-cat {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            z-index: 5;
+            cursor: pointer;
+            transition: all 0.4s;
+        }
+        
+        .cat-body {
+            width: 120px;
+            height: 80px;
+            background: linear-gradient(135deg, #ff9e7d 0%, #ff6b6b 100%);
+            border-radius: 60px 60px 40px 40px;
+            position: relative;
+            animation: catFloat 4s infinite ease-in-out;
+        }
+        
+        .cat-head {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #ff9e7d 0%, #ff6b6b 100%);
+            border-radius: 50%;
+            position: absolute;
+            top: -30px;
+            left: 20px;
+        }
+        
+        .cat-ear {
+            position: absolute;
+            width: 30px;
+            height: 40px;
+            background: #ff9e7d;
+            top: -15px;
+            border-radius: 50% 50% 0 0;
+        }
+        
+        .cat-ear.left {
+            left: 15px;
+            transform: rotate(-20deg);
+        }
+        
+        .cat-ear.right {
+            right: 15px;
+            transform: rotate(20deg);
+        }
+        
+        .cat-eye {
+            position: absolute;
+            width: 15px;
+            height: 20px;
+            background: #333;
+            border-radius: 50%;
+            top: 20px;
+        }
+        
+        .cat-eye.left {
+            left: 25px;
+        }
+        
+        .cat-eye.right {
+            right: 25px;
+        }
+        
+        .cat-nose {
+            position: absolute;
+            width: 10px;
+            height: 8px;
+            background: #ff6b6b;
+            border-radius: 50%;
+            top: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .cat-mouth {
+            position: absolute;
+            width: 30px;
+            height: 15px;
+            border-bottom: 3px solid #333;
+            border-radius: 0 0 50% 50%;
+            top: 45px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .cat-tail {
+            position: absolute;
+            width: 60px;
+            height: 15px;
+            background: #ff9e7d;
+            border-radius: 10px;
+            right: -50px;
+            top: 20px;
+            transform-origin: left;
+            animation: tailMove 3s infinite ease-in-out;
+        }
+        
+        .cat-paw-btn {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: var(--cat-paw);
+            border-radius: 50%;
+            top: -20px;
+            right: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+            z-index: 10;
+        }
+        
+        .cat-paw-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .cat-paw-btn i {
+            font-size: 24px;
+            color: #fff;
+        }
+        
+        .claw {
+            position: absolute;
+            width: 5px;
+            height: 15px;
+            background: #fff;
+            border-radius: 5px;
+            bottom: -10px;
+            transform-origin: top;
+            opacity: 0;
+        }
+        
+        .claw-1 { left: 10px; }
+        .claw-2 { left: 22px; }
+        .claw-3 { left: 35px; }
+        
+        .cat-paw-btn:hover .claw {
+            animation: clawOut 0.5s forwards;
+        }
+        
+        @keyframes clawOut {
+            0% { transform: scaleY(0); opacity: 0; }
+            100% { transform: scaleY(1); opacity: 1; }
+        }
+        
+        @keyframes catFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+        
+        @keyframes tailMove {
+            0%, 100% { transform: rotate(-10deg); }
+            50% { transform: rotate(10deg); }
+        }
+        
+        /* تصميم مخالب للأيقونات */
+        .icon-claw {
+            position: relative;
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+        }
+        
+        .icon-claw::before {
+            content: "";
+            position: absolute;
+            width: 8px;
+            height: 20px;
+            background: #ff6b6b;
+            border-radius: 4px;
+            top: 2px;
+            left: 4px;
+            transform: rotate(-20deg);
+        }
+        
+        .icon-claw::after {
+            content: "";
+            position: absolute;
+            width: 8px;
+            height: 20px;
+            background: #ff6b6b;
+            border-radius: 4px;
+            top: 2px;
+            right: 4px;
+            transform: rotate(20deg);
+        }
+        
+        .claw-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 12px;
+            color: #fff;
+            z-index: 2;
+        }
+        
+        /* أزرار على شكل كفوف */
+        .paw-button {
+            position: relative;
+            width: 60px;
+            height: 60px;
+            background: var(--cat-paw);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+        }
+        
+        .paw-button:hover {
+            transform: scale(1.1);
+        }
+        
+        .paw-button i {
+            font-size: 24px;
+            color: #fff;
+        }
+        
+        .paw-button .claw {
+            position: absolute;
+            width: 6px;
+            height: 20px;
+            background: #fff;
+            border-radius: 5px;
+            bottom: -8px;
+            transform-origin: top;
+            opacity: 0;
+        }
+        
+        .paw-button:hover .claw {
+            animation: clawOut 0.5s forwards;
+        }
+        
+        .paw-button .claw-1 { left: 12px; }
+        .paw-button .claw-2 { left: 27px; }
+        .paw-button .claw-3 { left: 42px; }
+        
+        /* تعديلات للقطط */
+        .cat-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .cat-face-element {
+            position: absolute;
+            font-size: 40px;
+            opacity: 0.1;
+            animation: float 25s infinite linear;
+        }
+        
         @media (max-width: 480px) {
             .header h1 {
                 font-size: 2rem;
@@ -528,18 +800,52 @@
             .info-card p {
                 font-size: 1.4rem;
             }
+            
+            .interactive-cat {
+                transform: scale(0.8);
+                bottom: 10px;
+                right: 10px;
+            }
         }
     </style>
 </head>
 <body>
     <!-- عناصر عائمة للخلفية -->
+    <div class="cat-elements">
+        <div class="cat-face-element" style="top: 10%; left: 5%; animation-duration: 30s;">😺</div>
+        <div class="cat-face-element" style="top: 20%; left: 80%; animation-duration: 25s; animation-delay: -5s;">😸</div>
+        <div class="cat-face-element" style="top: 70%; left: 15%; animation-duration: 35s; animation-delay: -10s;">😻</div>
+        <div class="cat-face-element" style="top: 85%; left: 75%; animation-duration: 40s; animation-delay: -15s;">🐾</div>
+    </div>
+    
     <div class="floating-element circle" style="top: 10%; left: 5%; animation-duration: 20s;"></div>
     <div class="floating-element cat-paw" style="top: 70%; left: 80%; animation-duration: 25s; animation-delay: -5s;"></div>
     <div class="floating-element circle" style="top: 40%; left: 85%; width: 70px; height: 70px; animation-duration: 18s; animation-delay: -3s;"></div>
     
+    <!-- القطة التفاعلية -->
+    <div class="interactive-cat">
+        <div class="cat-body">
+            <div class="cat-head">
+                <div class="cat-ear left"></div>
+                <div class="cat-ear right"></div>
+                <div class="cat-eye left"></div>
+                <div class="cat-eye right"></div>
+                <div class="cat-nose"></div>
+                <div class="cat-mouth"></div>
+            </div>
+            <div class="cat-tail"></div>
+        </div>
+        <div class="cat-paw-btn" id="refreshBtn">
+            <i class="fas fa-redo"></i>
+            <div class="claw claw-1"></div>
+            <div class="claw claw-2"></div>
+            <div class="claw claw-3"></div>
+        </div>
+    </div>
+    
     <div class="container">
         <div class="header">
-            <h1>بيانات الاتصال</h1>
+            <h1><i class="fas fa-paw"></i> بيانات الاتصال <i class="fas fa-paw"></i></h1>
             <p>الرجاء الاتصال بي على البيانات التالية</p>
         </div>
         
@@ -548,7 +854,12 @@
             <div class="form-container" id="formContainer">
                 <h2>بيانات الاتصال</h2>
                 <div class="input-group">
-                    <label for="name"><i class="fas fa-user"></i> اسمك:</label>
+                    <label for="name">
+                        <div class="icon-claw">
+                            <i class="fas fa-user claw-icon"></i>
+                        </div>
+                        اسمك:
+                    </label>
                     <div class="input-wrapper">
                         <input type="text" id="name" placeholder="أدخل اسمك هنا" required>
                         <div class="input-icon"><i class="fas fa-signature"></i></div>
@@ -556,7 +867,12 @@
                 </div>
                 
                 <div class="input-group">
-                    <label for="phone"><i class="fas fa-mobile-alt"></i> رقم هاتفك:</label>
+                    <label for="phone">
+                        <div class="icon-claw">
+                            <i class="fas fa-mobile-alt claw-icon"></i>
+                        </div>
+                        رقم هاتفك:
+                    </label>
                     <div class="input-wrapper">
                         <input type="tel" id="phone" placeholder="أدخل رقم هاتفك" required>
                         <div class="input-icon"><i class="fas fa-phone"></i></div>
@@ -564,16 +880,18 @@
                 </div>
                 
                 <button class="btn" id="saveBtn">
-                    حفظ البيانات <i class="fas fa-save"></i>
+                    <i class="fas fa-paw"></i> حفظ البيانات
                 </button>
                 
-                
+                <div class="storage-info">
+                    سيتم حفظ بياناتك لتظهر عند زيارتك القادمة للموقع
+                </div>
             </div>
             
             <!-- عرض البيانات للزيارات التالية -->
             <div class="data-container" id="dataContainer">
                 <div class="avatar">
-                    <i class="fas fa-user"></i>
+                    <i class="fas fa-cat"></i>
                 </div>
                 
                 <h2 class="welcome-text">بيانات الاتصال</h2>
@@ -590,7 +908,12 @@
                     </div>
                 </div>
                 
-                
+                <div class="paw-button" id="editBtn">
+                    <i class="fas fa-edit"></i>
+                    <div class="claw claw-1"></div>
+                    <div class="claw claw-2"></div>
+                    <div class="claw claw-3"></div>
+                </div>
             </div>
             
             <!-- حالة التحميل -->
@@ -601,7 +924,7 @@
         </div>
         
         <div class="footer">
-           &#128062; Designed By PickyPets &#128062;
+            <i class="fas fa-paw"></i> Designed By PickyPets <i class="fas fa-paw"></i>
         </div>
     </div>
     
@@ -622,6 +945,8 @@
             const nameInput = document.getElementById('name');
             const phoneInput = document.getElementById('phone');
             const saveBtn = document.getElementById('saveBtn');
+            const refreshBtn = document.getElementById('refreshBtn');
+            const editBtn = document.getElementById('editBtn');
             
             // Reference to Firestore document
             const docRef = doc(db, "catOwners", "currentOwner1");
@@ -716,7 +1041,7 @@
                 try {
                     // Show saving state
                     const originalBtnText = saveBtn.innerHTML;
-                    saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الحفظ...';
+                    saveBtn.innerHTML = '<i class="fas fa-paw fa-spin"></i> جاري الحفظ...';
                     saveBtn.disabled = true;
                     
                     // Save to Firestore
@@ -770,6 +1095,19 @@
                     saveBtn.innerHTML = originalBtnText;
                     saveBtn.disabled = false;
                 }
+            });
+            
+            // Refresh button event listener
+            refreshBtn.addEventListener('click', function() {
+                location.reload();
+            });
+            
+            // Edit button event listener
+            editBtn.addEventListener('click', function() {
+                dataContainer.style.display = 'none';
+                formContainer.style.display = 'flex';
+                nameInput.value = displayName.textContent;
+                phoneInput.value = displayPhone.textContent;
             });
             
             // Add animation styles
