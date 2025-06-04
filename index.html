@@ -2,10 +2,38 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>بيانات اتصال قططية</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDAaBVq8Cje-XYuNjxgJZkuKlGZlbCPwQI",
+            authDomain: "lostcattest-1.firebaseapp.com",
+            projectId: "lostcattest-1",
+            storageBucket: "lostcattest-1.appspot.com",
+            messagingSenderId: "801235048233",
+            appId: "1:801235048233:web:39f8ced879ea0dd3e70938"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        
+        // Make Firestore available globally
+        window.firestore = {
+            db,
+            doc,
+            getDoc,
+            setDoc
+        };
+    </script>
     <style>
         :root {
             --primary: #6a11cb;
@@ -32,12 +60,11 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 15px;
+            padding: 20px;
             color: var(--dark);
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
             overflow-x: hidden;
-            touch-action: manipulation;
         }
         
         @keyframes gradientBG {
@@ -51,8 +78,9 @@
             max-width: 500px;
             background: var(--card-bg);
             border-radius: 25px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
             overflow: hidden;
+            transition: all 0.5s ease;
             position: relative;
             z-index: 2;
             backdrop-filter: blur(10px);
@@ -74,7 +102,7 @@
         .header {
             background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
             color: white;
-            padding: 25px 20px;
+            padding: 35px 25px;
             text-align: center;
             position: relative;
             overflow: hidden;
@@ -92,8 +120,8 @@
         }
         
         .header h1 {
-            font-size: 1.8rem;
-            margin-bottom: 10px;
+            font-size: 2.5rem;
+            margin-bottom: 12px;
             font-weight: 800;
             letter-spacing: -0.5px;
             text-shadow: 0 2px 4px rgba(0,0,0,0.2);
@@ -102,17 +130,16 @@
         }
         
         .header p {
-            font-size: 1rem;
+            font-size: 1.2rem;
             opacity: 0.9;
-            max-width: 90%;
+            max-width: 80%;
             margin: 0 auto;
             position: relative;
             z-index: 2;
-            line-height: 1.5;
         }
         
         .content {
-            padding: 25px 20px;
+            padding: 35px 30px;
             position: relative;
         }
         
@@ -122,12 +149,12 @@
         
         .form-container h2, .welcome-text {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             color: var(--primary);
             font-weight: 700;
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             position: relative;
-            padding-bottom: 12px;
+            padding-bottom: 15px;
         }
         
         .form-container h2::after, .welcome-text::after {
@@ -136,8 +163,8 @@
             bottom: 0;
             right: 50%;
             transform: translateX(50%);
-            width: 60px;
-            height: 3px;
+            width: 80px;
+            height: 4px;
             background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
             border-radius: 10px;
         }
@@ -146,23 +173,23 @@
         .form-container {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 25px;
         }
         
         .input-group {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 10px;
         }
         
         .input-group label {
             font-weight: 600;
-            font-size: 1rem;
+            font-size: 1.1rem;
             color: #555;
             padding-right: 10px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
         
         .input-wrapper {
@@ -170,14 +197,14 @@
         }
         
         .input-group input {
-            padding: 14px 45px 14px 15px;
+            padding: 16px 50px 16px 20px;
             border: 2px solid #e0e0e0;
-            border-radius: 12px;
-            font-size: 1rem;
+            border-radius: 15px;
+            font-size: 1.1rem;
             transition: all 0.3s;
             width: 100%;
             background: rgba(255, 255, 255, 0.8);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
         }
         
         .input-group input:focus {
@@ -189,30 +216,30 @@
         .input-icon {
             position: absolute;
             top: 50%;
-            left: 15px;
+            left: 18px;
             transform: translateY(-50%);
             color: #aaa;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
         }
         
         .btn {
             background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
             color: white;
             border: none;
-            padding: 14px;
-            border-radius: 12px;
-            font-size: 1.1rem;
+            padding: 16px;
+            border-radius: 15px;
+            font-size: 1.2rem;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.3s;
-            margin-top: 8px;
+            margin-top: 10px;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 8px 18px rgba(106, 17, 203, 0.2);
+            box-shadow: 0 10px 20px rgba(106, 17, 203, 0.2);
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
         
         .btn::after {
@@ -228,8 +255,8 @@
         }
         
         .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 22px rgba(106, 17, 203, 0.3);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 25px rgba(106, 17, 203, 0.3);
         }
         
         .btn:hover::after {
@@ -237,7 +264,7 @@
         }
         
         .btn i {
-            margin-left: 6px;
+            margin-left: 8px;
         }
         
         /* استايل عرض البيانات */
@@ -245,21 +272,21 @@
             display: none;
             flex-direction: column;
             align-items: center;
-            gap: 25px;
+            gap: 30px;
             text-align: center;
         }
         
         .avatar {
-            width: 100px;
-            height: 100px;
+            width: 130px;
+            height: 130px;
             border-radius: 50%;
             background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-top: -65px;
-            border: 4px solid white;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            margin-top: -75px;
+            border: 5px solid white;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
             position: relative;
             z-index: 3;
             animation: pulse 2s infinite;
@@ -267,11 +294,11 @@
         
         @keyframes pulse {
             0% { box-shadow: 0 0 0 0px rgba(106, 17, 203, 0.5); }
-            100% { box-shadow: 0 0 0 15px rgba(106, 17, 203, 0); }
+            100% { box-shadow: 0 0 0 20px rgba(106, 17, 203, 0); }
         }
         
         .avatar i {
-            font-size: 3rem;
+            font-size: 3.8rem;
             color: white;
         }
         
@@ -281,12 +308,12 @@
         
         .info-card {
             background: white;
-            border-radius: 15px;
-            padding: 18px;
-            margin: 15px 0;
+            border-radius: 18px;
+            padding: 22px;
+            margin: 18px 0;
             text-align: right;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.07);
-            border-right: 4px solid var(--primary);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            border-right: 5px solid var(--primary);
             transition: transform 0.4s, box-shadow 0.4s;
             position: relative;
             overflow: hidden;
@@ -297,38 +324,38 @@
             position: absolute;
             top: 0;
             right: 0;
-            width: 4px;
+            width: 5px;
             height: 100%;
             background: linear-gradient(to bottom, var(--primary), var(--secondary));
         }
         
         .info-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+            transform: translateY(-8px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
         }
         
         .info-card h3 {
             color: var(--primary);
-            margin-bottom: 10px;
-            font-size: 1.1rem;
+            margin-bottom: 12px;
+            font-size: 1.3rem;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
         
         .info-card h3 i {
-            font-size: 1rem;
+            font-size: 1.2rem;
         }
         
         .info-card p {
-            font-size: 1.4rem;
+            font-size: 1.6rem;
             font-weight: 700;
             color: var(--dark);
             direction: ltr;
         }
         
         .welcome-text {
-            font-size: 1.7rem;
+            font-size: 2rem;
             font-weight: 800;
             color: var(--primary);
             margin-top: 10px;
@@ -339,31 +366,31 @@
             background: white;
             color: var(--primary);
             border: 2px solid var(--primary);
-            padding: 12px 25px;
-            border-radius: 12px;
-            font-size: 1rem;
+            padding: 14px 30px;
+            border-radius: 15px;
+            font-size: 1.1rem;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.3s;
-            margin-top: 8px;
+            margin-top: 10px;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            box-shadow: 0 4px 12px rgba(106, 17, 203, 0.1);
+            gap: 10px;
+            box-shadow: 0 5px 15px rgba(106, 17, 203, 0.1);
         }
         
         .action-btn:hover {
             background: var(--primary);
             color: white;
             transform: translateY(-3px);
-            box-shadow: 0 6px 18px rgba(106, 17, 203, 0.25);
+            box-shadow: 0 8px 20px rgba(106, 17, 203, 0.25);
         }
         
         .footer {
             text-align: center;
-            padding: 18px;
+            padding: 22px;
             color: #777;
-            font-size: 0.85rem;
+            font-size: 0.95rem;
             border-top: 1px solid #eee;
             background: rgba(248, 249, 250, 0.8);
         }
@@ -373,12 +400,11 @@
             z-index: 1;
             opacity: 0.3;
             animation: float 15s infinite linear;
-            pointer-events: none;
         }
         
         .circle {
-            width: 80px;
-            height: 80px;
+            width: 100px;
+            height: 100px;
             border-radius: 50%;
             background: linear-gradient(45deg, var(--accent), var(--cat-color));
         }
@@ -386,14 +412,14 @@
         .triangle {
             width: 0;
             height: 0;
-            border-left: 40px solid transparent;
-            border-right: 40px solid transparent;
-            border-bottom: 70px solid var(--success);
+            border-left: 50px solid transparent;
+            border-right: 50px solid transparent;
+            border-bottom: 87px solid var(--success);
         }
         
         .cat-paw {
-            width: 60px;
-            height: 60px;
+            width: 80px;
+            height: 80px;
             background: var(--cat-paw);
             border-radius: 50%;
             position: relative;
@@ -409,17 +435,17 @@
         }
         
         .cat-paw::before {
-            width: 40px;
-            height: 40px;
-            top: -15px;
-            left: 10px;
+            width: 50px;
+            height: 50px;
+            top: -20px;
+            left: 15px;
         }
         
         .cat-paw::after {
-            width: 40px;
-            height: 40px;
-            top: -15px;
-            right: 10px;
+            width: 50px;
+            height: 50px;
+            top: -20px;
+            right: 15px;
         }
         
         .cat-icon {
@@ -427,55 +453,53 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 25px;
-            height: 25px;
+            width: 30px;
+            height: 30px;
             background: white;
             border-radius: 50%;
         }
         
         @keyframes float {
             0% { transform: translate(0, 0) rotate(0deg); }
-            25% { transform: translate(15px, 30px) rotate(90deg); }
-            50% { transform: translate(30px, 0) rotate(180deg); }
-            75% { transform: translate(15px, -30px) rotate(270deg); }
+            25% { transform: translate(20px, 40px) rotate(90deg); }
+            50% { transform: translate(40px, 0) rotate(180deg); }
+            75% { transform: translate(20px, -40px) rotate(270deg); }
             100% { transform: translate(0, 0) rotate(360deg); }
         }
         
         .contact-instruction {
             text-align: center;
-            margin-top: -12px;
-            margin-bottom: 20px;
+            margin-top: -15px;
+            margin-bottom: 25px;
             color: #555;
-            font-size: 1rem;
-            padding: 0 15px;
-            line-height: 1.5;
+            font-size: 1.1rem;
+            padding: 0 20px;
         }
         
         .storage-info {
             background: #e8f4ff;
-            border-radius: 10px;
-            padding: 10px;
-            margin-top: 15px;
+            border-radius: 12px;
+            padding: 12px;
+            margin-top: 20px;
             text-align: center;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             color: #2c6db3;
             border: 1px solid #a9d0ff;
-            line-height: 1.5;
         }
         
         .loading {
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 15px;
+            padding: 20px;
         }
         
         .spinner {
-            width: 35px;
-            height: 35px;
-            border: 3px solid rgba(106, 17, 203, 0.2);
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(106, 17, 203, 0.2);
             border-radius: 50%;
-            border-top: 3px solid var(--primary);
+            border-top: 4px solid var(--primary);
             animation: spin 1s linear infinite;
         }
         
@@ -486,144 +510,143 @@
         
         /* تصميم القطة التفاعلية */
         .interactive-cat {
-            position: fixed;
-            bottom: 15px;
-            right: 15px;
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
             z-index: 5;
             cursor: pointer;
             transition: all 0.4s;
-            transform: scale(0.8);
         }
         
         .cat-body {
-            width: 100px;
-            height: 65px;
+            width: 120px;
+            height: 80px;
             background: linear-gradient(135deg, #ff9e7d 0%, #ff6b6b 100%);
-            border-radius: 50px 50px 30px 30px;
+            border-radius: 60px 60px 40px 40px;
             position: relative;
             animation: catFloat 4s infinite ease-in-out;
         }
         
         .cat-head {
-            width: 65px;
-            height: 65px;
+            width: 80px;
+            height: 80px;
             background: linear-gradient(135deg, #ff9e7d 0%, #ff6b6b 100%);
             border-radius: 50%;
             position: absolute;
-            top: -25px;
-            left: 15px;
+            top: -30px;
+            left: 20px;
         }
         
         .cat-ear {
             position: absolute;
-            width: 25px;
-            height: 30px;
+            width: 30px;
+            height: 40px;
             background: #ff9e7d;
-            top: -12px;
+            top: -15px;
             border-radius: 50% 50% 0 0;
         }
         
         .cat-ear.left {
-            left: 12px;
+            left: 15px;
             transform: rotate(-20deg);
         }
         
         .cat-ear.right {
-            right: 12px;
+            right: 15px;
             transform: rotate(20deg);
         }
         
         .cat-eye {
             position: absolute;
-            width: 12px;
-            height: 15px;
+            width: 15px;
+            height: 20px;
             background: #333;
             border-radius: 50%;
-            top: 15px;
+            top: 20px;
         }
         
         .cat-eye.left {
-            left: 20px;
+            left: 25px;
         }
         
         .cat-eye.right {
-            right: 20px;
+            right: 25px;
         }
         
         .cat-nose {
             position: absolute;
-            width: 8px;
-            height: 6px;
+            width: 10px;
+            height: 8px;
             background: #ff6b6b;
             border-radius: 50%;
-            top: 32px;
+            top: 40px;
             left: 50%;
             transform: translateX(-50%);
         }
         
         .cat-mouth {
             position: absolute;
-            width: 25px;
-            height: 12px;
-            border-bottom: 2px solid #333;
+            width: 30px;
+            height: 15px;
+            border-bottom: 3px solid #333;
             border-radius: 0 0 50% 50%;
-            top: 36px;
+            top: 45px;
             left: 50%;
             transform: translateX(-50%);
         }
         
         .cat-tail {
             position: absolute;
-            width: 50px;
-            height: 12px;
+            width: 60px;
+            height: 15px;
             background: #ff9e7d;
-            border-radius: 8px;
-            right: -40px;
-            top: 15px;
+            border-radius: 10px;
+            right: -50px;
+            top: 20px;
             transform-origin: left;
             animation: tailMove 3s infinite ease-in-out;
         }
         
         .cat-paw-btn {
             position: absolute;
-            width: 45px;
-            height: 45px;
+            width: 50px;
+            height: 50px;
             background: var(--cat-paw);
             border-radius: 50%;
-            top: -15px;
-            right: 25px;
+            top: -20px;
+            right: 30px;
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
             transition: all 0.3s;
             z-index: 10;
         }
         
         .cat-paw-btn:hover {
-            transform: scale(1.05);
+            transform: scale(1.1);
         }
         
         .cat-paw-btn i {
-            font-size: 20px;
+            font-size: 24px;
             color: #fff;
         }
         
         .claw {
             position: absolute;
-            width: 4px;
-            height: 12px;
+            width: 5px;
+            height: 15px;
             background: #fff;
-            border-radius: 4px;
-            bottom: -8px;
+            border-radius: 5px;
+            bottom: -10px;
             transform-origin: top;
             opacity: 0;
         }
         
-        .claw-1 { left: 8px; }
-        .claw-2 { left: 18px; }
-        .claw-3 { left: 28px; }
+        .claw-1 { left: 10px; }
+        .claw-2 { left: 22px; }
+        .claw-3 { left: 35px; }
         
         .cat-paw-btn:hover .claw {
             animation: clawOut 0.5s forwards;
@@ -636,7 +659,7 @@
         
         @keyframes catFloat {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-12px); }
+            50% { transform: translateY(-15px); }
         }
         
         @keyframes tailMove {
@@ -648,31 +671,31 @@
         .icon-claw {
             position: relative;
             display: inline-block;
-            width: 22px;
-            height: 22px;
+            width: 24px;
+            height: 24px;
         }
         
         .icon-claw::before {
             content: "";
             position: absolute;
-            width: 7px;
-            height: 16px;
+            width: 8px;
+            height: 20px;
             background: #ff6b6b;
-            border-radius: 3px;
+            border-radius: 4px;
             top: 2px;
-            left: 3px;
+            left: 4px;
             transform: rotate(-20deg);
         }
         
         .icon-claw::after {
             content: "";
             position: absolute;
-            width: 7px;
-            height: 16px;
+            width: 8px;
+            height: 20px;
             background: #ff6b6b;
-            border-radius: 3px;
+            border-radius: 4px;
             top: 2px;
-            right: 3px;
+            right: 4px;
             transform: rotate(20deg);
         }
         
@@ -681,7 +704,7 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 11px;
+            font-size: 12px;
             color: #fff;
             z-index: 2;
         }
@@ -689,34 +712,34 @@
         /* أزرار على شكل كفوف */
         .paw-button {
             position: relative;
-            width: 55px;
-            height: 55px;
+            width: 60px;
+            height: 60px;
             background: var(--cat-paw);
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
             transition: all 0.3s;
         }
         
         .paw-button:hover {
-            transform: scale(1.05);
+            transform: scale(1.1);
         }
         
         .paw-button i {
-            font-size: 22px;
+            font-size: 24px;
             color: #fff;
         }
         
         .paw-button .claw {
             position: absolute;
-            width: 5px;
-            height: 16px;
+            width: 6px;
+            height: 20px;
             background: #fff;
-            border-radius: 4px;
-            bottom: -6px;
+            border-radius: 5px;
+            bottom: -8px;
             transform-origin: top;
             opacity: 0;
         }
@@ -725,9 +748,9 @@
             animation: clawOut 0.5s forwards;
         }
         
-        .paw-button .claw-1 { left: 10px; }
-        .paw-button .claw-2 { left: 22px; }
-        .paw-button .claw-3 { left: 35px; }
+        .paw-button .claw-1 { left: 12px; }
+        .paw-button .claw-2 { left: 27px; }
+        .paw-button .claw-3 { left: 42px; }
         
         /* تعديلات للقطط */
         .cat-elements {
@@ -742,151 +765,46 @@
         
         .cat-face-element {
             position: absolute;
-            font-size: 35px;
+            font-size: 40px;
             opacity: 0.1;
             animation: float 25s infinite linear;
         }
         
-        /* رسائل التنبيه */
-        .alert-message {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            left: 20px;
-            padding: 15px;
-            border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
-            z-index: 1000;
-            animation: slideIn 0.5s, fadeOut 0.5s 2.5s;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 600;
-        }
-        
-        .alert-error {
-            background: var(--accent);
-            color: white;
-        }
-        
-        .alert-success {
-            background: var(--success);
-            color: white;
-        }
-        
-        /* تحسينات للشاشات الصغيرة */
         @media (max-width: 480px) {
-            .header {
-                padding: 20px 15px;
-            }
-            
             .header h1 {
-                font-size: 1.6rem;
+                font-size: 2rem;
             }
             
             .header p {
-                font-size: 0.9rem;
+                font-size: 1rem;
             }
             
             .content {
-                padding: 20px 15px;
+                padding: 25px 20px;
             }
             
             .avatar {
-                width: 90px;
-                height: 90px;
-                margin-top: -55px;
+                width: 110px;
+                height: 110px;
+                margin-top: -65px;
             }
             
             .avatar i {
-                font-size: 2.5rem;
+                font-size: 3rem;
             }
             
             .welcome-text {
-                font-size: 1.5rem;
-            }
-            
-            .info-card {
-                padding: 15px;
-            }
-            
-            .info-card h3 {
-                font-size: 1rem;
+                font-size: 1.7rem;
             }
             
             .info-card p {
-                font-size: 1.3rem;
-            }
-            
-            .form-container h2 {
-                font-size: 1.3rem;
-            }
-            
-            .input-group label {
-                font-size: 0.95rem;
-            }
-            
-            .input-group input {
-                padding: 12px 40px 12px 12px;
-                font-size: 0.95rem;
-            }
-            
-            .input-icon {
-                left: 12px;
-                font-size: 1rem;
-            }
-            
-            .btn {
-                padding: 12px;
-                font-size: 1rem;
+                font-size: 1.4rem;
             }
             
             .interactive-cat {
-                transform: scale(0.7);
+                transform: scale(0.8);
                 bottom: 10px;
                 right: 10px;
-            }
-            
-            .paw-button {
-                width: 50px;
-                height: 50px;
-            }
-            
-            .paw-button i {
-                font-size: 20px;
-            }
-            
-            .alert-message {
-                top: 15px;
-                right: 15px;
-                left: 15px;
-                padding: 12px;
-                font-size: 0.9rem;
-            }
-        }
-        
-        /* رسوميات متحركة */
-        @keyframes slideIn {
-            from { transform: translateY(-100px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        
-        @keyframes fadeOut {
-            from { opacity: 1; }
-            to { opacity: 0; }
-        }
-        
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            20%, 60% { transform: translateX(-8px); }
-            40%, 80% { transform: translateX(8px); }
-        }
-        
-        /* تحسينات للوحة المفاتيح على الموبايل */
-        @media (max-height: 600px) {
-            .container {
-                margin-top: 20px;
-                margin-bottom: 20px;
             }
         }
     </style>
@@ -902,7 +820,7 @@
     
     <div class="floating-element circle" style="top: 10%; left: 5%; animation-duration: 20s;"></div>
     <div class="floating-element cat-paw" style="top: 70%; left: 80%; animation-duration: 25s; animation-delay: -5s;"></div>
-    <div class="floating-element circle" style="top: 40%; left: 85%; width: 60px; height: 60px; animation-duration: 18s; animation-delay: -3s;"></div>
+    <div class="floating-element circle" style="top: 40%; left: 85%; width: 70px; height: 70px; animation-duration: 18s; animation-delay: -3s;"></div>
     
     <!-- القطة التفاعلية -->
     <div class="interactive-cat">
@@ -1011,7 +929,14 @@
     </div>
     
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Wait for Firebase to initialize
+            while (!window.firestore) {
+                await new Promise(resolve => setTimeout(resolve, 100));
+            }
+            
+            const { db, doc, getDoc, setDoc } = window.firestore;
+            
             const formContainer = document.getElementById('formContainer');
             const dataContainer = document.getElementById('dataContainer');
             const loading = document.getElementById('loading');
@@ -1023,92 +948,161 @@
             const refreshBtn = document.getElementById('refreshBtn');
             const editBtn = document.getElementById('editBtn');
             
-            // محاكاة بيانات التخزين المحلي
-            const savedData = localStorage.getItem('catOwnerData');
+            // Reference to Firestore document
+            const docRef = doc(db, "catOwners", "currentOwner1");
             
-            // إظهار واجهة مناسبة بناءً على وجود بيانات محفوظة
-            if (savedData) {
-                const data = JSON.parse(savedData);
-                displayName.textContent = data.name || 'غير متوفر';
-                displayPhone.textContent = data.phone || 'غير متوفر';
-                dataContainer.style.display = 'flex';
-                formContainer.style.display = 'none';
-            } else {
-                dataContainer.style.display = 'none';
+            // Show loading state
+            formContainer.style.display = 'none';
+            dataContainer.style.display = 'none';
+            loading.style.display = 'flex';
+            
+            try {
+                // Try to get data from Firestore
+                const docSnap = await getDoc(docRef);
+                
+                if (docSnap.exists()) {
+                    // Data exists - show data container
+                    const data = docSnap.data();
+                    displayName.textContent = data.name || 'غير متوفر';
+                    displayPhone.textContent = data.phone || 'غير متوفر';
+                    dataContainer.style.display = 'flex';
+                } else {
+                    // No data - show form
+                    formContainer.style.display = 'flex';
+                }
+            } catch (error) {
+                // Error handling
+                console.error("حدث خطأ في جلب البيانات:", error);
+                
+                // Show error message
+                const errorMsg = document.createElement('div');
+                errorMsg.innerHTML = '<i class="fas fa-exclamation-triangle"></i> فشل في تحميل البيانات، الرجاء المحاولة لاحقًا';
+                errorMsg.style.cssText = `
+                    background: var(--accent);
+                    color: white;
+                    padding: 15px;
+                    border-radius: 10px;
+                    text-align: center;
+                    margin: 20px;
+                    font-weight: bold;
+                `;
+                document.querySelector('.content').appendChild(errorMsg);
+                
+                // Show form as fallback
                 formContainer.style.display = 'flex';
+            } finally {
+                // Hide loading state
+                loading.style.display = 'none';
             }
             
-            // إخفاء حالة التحميل
-            loading.style.display = 'none';
-            
-            // زر الحفظ
-            saveBtn.addEventListener('click', function() {
+            // Save button event listener
+            saveBtn.addEventListener('click', async function() {
                 const name = nameInput.value;
                 const phone = phoneInput.value;
                 
                 if (!name || !phone) {
-                    // عرض رسالة خطأ
-                    showAlert('الرجاء إدخال جميع البيانات المطلوبة', 'error');
+                    // Show error animation
+                    const inputs = document.querySelectorAll('input');
+                    inputs.forEach(input => {
+                        if (!input.value) {
+                            input.style.borderColor = 'var(--accent)';
+                            input.style.animation = 'shake 0.5s';
+                            
+                            setTimeout(() => {
+                                input.style.animation = '';
+                            }, 500);
+                        }
+                    });
                     
-                    // هزة للعناصر الفارغة
-                    if (!name) {
-                        nameInput.style.borderColor = 'var(--accent)';
-                        nameInput.style.animation = 'shake 0.5s';
-                    }
+                    // Create alert message
+                    const alertMsg = document.createElement('div');
+                    alertMsg.innerHTML = '<i class="fas fa-exclamation-circle"></i> الرجاء إدخال جميع البيانات المطلوبة';
+                    alertMsg.style.cssText = `
+                        position: fixed;
+                        top: 20px;
+                        right: 20px;
+                        background: var(--accent);
+                        color: white;
+                        padding: 15px 25px;
+                        border-radius: 10px;
+                        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                        z-index: 1000;
+                        animation: slideIn 0.5s, fadeOut 0.5s 2.5s;
+                    `;
                     
-                    if (!phone) {
-                        phoneInput.style.borderColor = 'var(--accent)';
-                        phoneInput.style.animation = 'shake 0.5s';
-                    }
+                    document.body.appendChild(alertMsg);
                     
                     setTimeout(() => {
-                        nameInput.style.animation = '';
-                        phoneInput.style.animation = '';
-                    }, 500);
-                    
+                        alertMsg.remove();
+                    }, 3000);
                     return;
                 }
                 
-                // محاكاة عملية الحفظ
-                saveBtn.innerHTML = '<i class="fas fa-paw fa-spin"></i> جاري الحفظ...';
-                saveBtn.disabled = true;
-                
-                setTimeout(() => {
-                    // حفظ البيانات في التخزين المحلي
-                    const ownerData = {
+                try {
+                    // Show saving state
+                    const originalBtnText = saveBtn.innerHTML;
+                    saveBtn.innerHTML = '<i class="fas fa-paw fa-spin"></i> جاري الحفظ...';
+                    saveBtn.disabled = true;
+                    
+                    // Save to Firestore
+                    await setDoc(docRef, {
                         name: name,
                         phone: phone,
-                        timestamp: new Date().toISOString()
-                    };
+                        timestamp: new Date()
+                    });
                     
-                    localStorage.setItem('catOwnerData', JSON.stringify(ownerData));
-                    
-                    // عرض رسالة نجاح
-                    showAlert('تم حفظ البيانات بنجاح!', 'success');
-                    
-                    // إظهار واجهة البيانات
+                    // Show success animation
                     saveBtn.innerHTML = '<i class="fas fa-check"></i> تم الحفظ!';
                     saveBtn.style.background = 'linear-gradient(90deg, var(--success), #01c896)';
                     
                     setTimeout(() => {
-                        saveBtn.innerHTML = '<i class="fas fa-paw"></i> حفظ البيانات';
+                        // Reset button
+                        saveBtn.innerHTML = originalBtnText;
                         saveBtn.style.background = 'linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%)';
                         saveBtn.disabled = false;
                         
+                        // Show data container
                         formContainer.style.display = 'none';
                         dataContainer.style.display = 'flex';
                         displayName.textContent = name;
                         displayPhone.textContent = phone;
                     }, 1500);
-                }, 1000);
+                } catch (error) {
+                    console.error("حدث خطأ في حفظ البيانات:", error);
+                    
+                    // Show error message
+                    const alertMsg = document.createElement('div');
+                    alertMsg.innerHTML = '<i class="fas fa-exclamation-triangle"></i> فشل في حفظ البيانات، الرجاء المحاولة لاحقًا';
+                    alertMsg.style.cssText = `
+                        position: fixed;
+                        top: 20px;
+                        right: 20px;
+                        background: var(--accent);
+                        color: white;
+                        padding: 15px 25px;
+                        border-radius: 10px;
+                        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                        z-index: 1000;
+                    `;
+                    
+                    document.body.appendChild(alertMsg);
+                    
+                    setTimeout(() => {
+                        alertMsg.remove();
+                    }, 3000);
+                    
+                    // Reset button
+                    saveBtn.innerHTML = originalBtnText;
+                    saveBtn.disabled = false;
+                }
             });
             
-            // زر التحديث
+            // Refresh button event listener
             refreshBtn.addEventListener('click', function() {
                 location.reload();
             });
             
-            // زر التعديل
+            // Edit button event listener
             editBtn.addEventListener('click', function() {
                 dataContainer.style.display = 'none';
                 formContainer.style.display = 'flex';
@@ -1116,42 +1110,28 @@
                 phoneInput.value = displayPhone.textContent;
             });
             
-            // وظيفة لعرض التنبيهات
-            function showAlert(message, type) {
-                const alertElement = document.createElement('div');
-                alertElement.className = `alert-message alert-${type}`;
-                alertElement.innerHTML = `
-                    <i class="fas ${type === 'error' ? 'fa-exclamation-circle' : 'fa-check-circle'}"></i>
-                    ${message}
-                `;
-                
-                document.body.appendChild(alertElement);
-                
-                setTimeout(() => {
-                    alertElement.style.animation = 'fadeOut 0.5s forwards';
-                    setTimeout(() => {
-                        alertElement.remove();
-                    }, 500);
-                }, 2500);
-            }
-            
-            // إضافة أنماط الرسوم المتحركة
+            // Add animation styles
             const style = document.createElement('style');
             style.innerHTML = `
                 @keyframes shake {
                     0%, 100% { transform: translateX(0); }
-                    20%, 60% { transform: translateX(-8px); }
-                    40%, 80% { transform: translateX(8px); }
+                    20%, 60% { transform: translateX(-10px); }
+                    40%, 80% { transform: translateX(10px); }
                 }
                 
                 @keyframes slideIn {
-                    from { transform: translateY(-100px); opacity: 0; }
-                    to { transform: translateY(0); opacity: 1; }
+                    from { transform: translateX(100px); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
                 }
                 
                 @keyframes fadeOut {
-                    from { opacity: 1; }
-                    to { opacity: 0; }
+                    from { opacity: 1; transform: translateY(0); }
+                    to { opacity: 0; transform: translateY(-20px); }
+                }
+                
+                @keyframes fadeIn {
+                    from { opacity: 0; transform: translateY(-20px); }
+                    to { opacity: 1; transform: translateY(0); }
                 }
             `;
             document.head.appendChild(style);
