@@ -6,6 +6,34 @@
     <title>بيانات اتصال مالك القطة الضائعة</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDAaBVq8Cje-XYuNjxgJZkuKlGZlbCPwQI",
+            authDomain: "lostcattest-1.firebaseapp.com",
+            projectId: "lostcattest-1",
+            storageBucket: "lostcattest-1.appspot.com",
+            messagingSenderId: "801235048233",
+            appId: "1:801235048233:web:39f8ced879ea0dd3e70938"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        
+        // Make Firestore available globally
+        window.firestore = {
+            db,
+            doc,
+            getDoc,
+            setDoc
+        };
+    </script>
     <style>
         :root {
             --primary: #6a11cb;
@@ -472,6 +500,27 @@
             border: 1px solid #a9d0ff;
         }
         
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(106, 17, 203, 0.2);
+            border-radius: 50%;
+            border-top: 4px solid var(--primary);
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
         @media (max-width: 480px) {
             .header h1 {
                 font-size: 2rem;
@@ -547,7 +596,7 @@
                 </button>
                 
                 <div class="storage-info">
-                    <i class="fas fa-database"></i> يتم تخزين البيانات باستخدام Loba للتخزين المحلي الآمن
+                    <i class="fas fa-database"></i> يتم تخزين البيانات باستخدام Firestore للتخزين السحابي الآمن
                 </div>
             </div>
             
@@ -582,96 +631,95 @@
                 </button>
                 
                 <div class="storage-info">
-                    <i class="fas fa-database"></i> يتم تخزين البيانات باستخدام Loba للتخزين المحلي الآمن
+                    <i class="fas fa-database"></i> يتم تخزين البيانات باستخدام Firestore للتخزين السحابي الآمن
                 </div>
+            </div>
+            
+            <!-- حالة التحميل -->
+            <div class="loading" id="loading" style="display: none;">
+                <div class="spinner"></div>
+                <span style="margin-right: 10px;">جاري تحميل البيانات...</span>
             </div>
         </div>
         
         <div class="footer">
-            تم التطوير لمساعدة من يجد القطط الضائعة | التخزين باستخدام Loba
+            تم التطوير لمساعدة من يجد القطط الضائعة | التخزين باستخدام Firestore
         </div>
     </div>
     
     <script>
-        // Loba storage implementation
-        const loba = {
-            get: (key) => {
-                try {
-                    const item = localStorage.getItem(key);
-                    return item ? JSON.parse(item) : null;
-                } catch (e) {
-                    console.error('Error reading from loba storage:', e);
-                    return null;
-                }
-            },
-            set: (key, value) => {
-                try {
-                    localStorage.setItem(key, JSON.stringify(value));
-                    return true;
-                } catch (e) {
-                    console.error('Error writing to loba storage:', e);
-                    return false;
-                }
-            },
-            remove: (key) => {
-                try {
-                    localStorage.removeItem(key);
-                    return true;
-                } catch (e) {
-                    console.error('Error removing from loba storage:', e);
-                    return false;
-                }
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Wait for Firebase to initialize
+            while (!window.firestore) {
+                await new Promise(resolve => setTimeout(resolve, 100));
             }
-        };
-
-        // التحقق من وجود بيانات مخزنة
-        document.addEventListener('DOMContentLoaded', function() {
-            const userName = loba.get('userName');
-            const userPhone = loba.get('userPhone');
+            
+            const { db, doc, getDoc, setDoc } = window.firestore;
             
             const formContainer = document.getElementById('formContainer');
             const dataContainer = document.getElementById('dataContainer');
+            const loading = document.getElementById('loading');
             const displayName = document.getElementById('displayName');
             const displayPhone = document.getElementById('displayPhone');
+            const nameInput = document.getElementById('name');
+            const phoneInput = document.getElementById('phone');
+            const saveBtn = document.getElementById('saveBtn');
+            const editBtn = document.getElementById('editBtn');
             
-            if (userName && userPhone) {
-                // عرض البيانات إذا كانت موجودة
-                formContainer.style.display = 'none';
-                dataContainer.style.display = 'flex';
-                displayName.textContent = userName;
-                displayPhone.textContent = userPhone;
-            } else {
-                // عرض النموذج إذا لم تكن البيانات موجودة
+            // Reference to Firestore document
+            const docRef = doc(db, "catOwners", "currentOwner");
+            
+            // Show loading state
+            formContainer.style.display = 'none';
+            dataContainer.style.display = 'none';
+            loading.style.display = 'flex';
+            
+            try {
+                // Try to get data from Firestore
+                const docSnap = await getDoc(docRef);
+                
+                if (docSnap.exists()) {
+                    // Data exists - show data container
+                    const data = docSnap.data();
+                    displayName.textContent = data.name || 'غير متوفر';
+                    displayPhone.textContent = data.phone || 'غير متوفر';
+                    dataContainer.style.display = 'flex';
+                } else {
+                    // No data - show form
+                    formContainer.style.display = 'flex';
+                }
+            } catch (error) {
+                // Error handling
+                console.error("حدث خطأ في جلب البيانات:", error);
+                
+                // Show error message
+                const errorMsg = document.createElement('div');
+                errorMsg.innerHTML = '<i class="fas fa-exclamation-triangle"></i> فشل في تحميل البيانات، الرجاء المحاولة لاحقًا';
+                errorMsg.style.cssText = `
+                    background: var(--accent);
+                    color: white;
+                    padding: 15px;
+                    border-radius: 10px;
+                    text-align: center;
+                    margin: 20px;
+                    font-weight: bold;
+                `;
+                document.querySelector('.content').appendChild(errorMsg);
+                
+                // Show form as fallback
                 formContainer.style.display = 'flex';
-                dataContainer.style.display = 'none';
+            } finally {
+                // Hide loading state
+                loading.style.display = 'none';
             }
             
-            // حفظ البيانات عند النقر على الزر
-            document.getElementById('saveBtn').addEventListener('click', function() {
-                const name = document.getElementById('name').value;
-                const phone = document.getElementById('phone').value;
+            // Save button event listener
+            saveBtn.addEventListener('click', async function() {
+                const name = nameInput.value;
+                const phone = phoneInput.value;
                 
-                if (name && phone) {
-                    loba.set('userName', name);
-                    loba.set('userPhone', phone);
-                    
-                    // عرض رسالة نجاح متحركة
-                    const btn = this;
-                    btn.innerHTML = '<i class="fas fa-check"></i> تم الحفظ!';
-                    btn.style.background = 'linear-gradient(90deg, var(--success), #01c896)';
-                    
-                    setTimeout(() => {
-                        btn.innerHTML = 'حفظ البيانات <i class="fas fa-save"></i>';
-                        btn.style.background = 'linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%)';
-                        
-                        // عرض البيانات بعد الحفظ
-                        formContainer.style.display = 'none';
-                        dataContainer.style.display = 'flex';
-                        displayName.textContent = name;
-                        displayPhone.textContent = phone;
-                    }, 1500);
-                } else {
-                    // عرض رسالة خطأ متحركة
+                if (!name || !phone) {
+                    // Show error animation
                     const inputs = document.querySelectorAll('input');
                     inputs.forEach(input => {
                         if (!input.value) {
@@ -684,7 +732,7 @@
                         }
                     });
                     
-                    // إنشاء رسالة تنبيه جميلة
+                    // Create alert message
                     const alertMsg = document.createElement('div');
                     alertMsg.innerHTML = '<i class="fas fa-exclamation-circle"></i> الرجاء إدخال جميع البيانات المطلوبة';
                     alertMsg.style.cssText = `
@@ -705,25 +753,84 @@
                     setTimeout(() => {
                         alertMsg.remove();
                     }, 3000);
+                    return;
+                }
+                
+                try {
+                    // Show saving state
+                    const originalBtnText = saveBtn.innerHTML;
+                    saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الحفظ...';
+                    saveBtn.disabled = true;
+                    
+                    // Save to Firestore
+                    await setDoc(docRef, {
+                        name: name,
+                        phone: phone,
+                        timestamp: new Date()
+                    });
+                    
+                    // Show success animation
+                    saveBtn.innerHTML = '<i class="fas fa-check"></i> تم الحفظ!';
+                    saveBtn.style.background = 'linear-gradient(90deg, var(--success), #01c896)';
+                    
+                    setTimeout(() => {
+                        // Reset button
+                        saveBtn.innerHTML = originalBtnText;
+                        saveBtn.style.background = 'linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%)';
+                        saveBtn.disabled = false;
+                        
+                        // Show data container
+                        formContainer.style.display = 'none';
+                        dataContainer.style.display = 'flex';
+                        displayName.textContent = name;
+                        displayPhone.textContent = phone;
+                    }, 1500);
+                } catch (error) {
+                    console.error("حدث خطأ في حفظ البيانات:", error);
+                    
+                    // Show error message
+                    const alertMsg = document.createElement('div');
+                    alertMsg.innerHTML = '<i class="fas fa-exclamation-triangle"></i> فشل في حفظ البيانات، الرجاء المحاولة لاحقًا';
+                    alertMsg.style.cssText = `
+                        position: fixed;
+                        top: 20px;
+                        right: 20px;
+                        background: var(--accent);
+                        color: white;
+                        padding: 15px 25px;
+                        border-radius: 10px;
+                        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                        z-index: 1000;
+                    `;
+                    
+                    document.body.appendChild(alertMsg);
+                    
+                    setTimeout(() => {
+                        alertMsg.remove();
+                    }, 3000);
+                    
+                    // Reset button
+                    saveBtn.innerHTML = originalBtnText;
+                    saveBtn.disabled = false;
                 }
             });
             
-            // تعديل البيانات
-            document.getElementById('editBtn').addEventListener('click', function() {
-                // إضافة تأثير اختفاء
+            // Edit button event listener
+            editBtn.addEventListener('click', function() {
+                // Add fade out effect
                 dataContainer.style.animation = 'fadeOut 0.5s';
                 
                 setTimeout(() => {
-                    // إعادة عرض النموذج
+                    // Show form
                     formContainer.style.display = 'flex';
                     dataContainer.style.display = 'none';
                     dataContainer.style.animation = '';
                     
-                    // تعبئة الحقول بالبيانات الحالية
-                    document.getElementById('name').value = loba.get('userName') || '';
-                    document.getElementById('phone').value = loba.get('userPhone') || '';
+                    // Prefill form with current data
+                    nameInput.value = displayName.textContent;
+                    phoneInput.value = displayPhone.textContent;
                     
-                    // إضافة تأثير ظهور للنموذج
+                    // Add fade in effect to form
                     formContainer.style.animation = 'fadeIn 0.5s';
                     
                     setTimeout(() => {
@@ -732,7 +839,7 @@
                 }, 500);
             });
             
-            // إضافة أنماط للرسوم المتحركة
+            // Add animation styles
             const style = document.createElement('style');
             style.innerHTML = `
                 @keyframes shake {
