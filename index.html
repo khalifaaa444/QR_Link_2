@@ -36,14 +36,20 @@
     </script>
     <style>
         :root {
-            --primary: #6a11cb;
-            --secondary: #2575fc;
-            --accent: #ff6b6b;
-            --light: #f8f9fa;
-            --dark: #212529;
-            --success: #20bf6b;
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --accent: #ff6b9d;
+            --success: #4ecdc4;
+            --warning: #ffc107;
+            --light: #f8fafc;
+            --dark: #2d3748;
             --card-bg: rgba(255, 255, 255, 0.95);
-            --cat-color: #ff9e7d;
+            --cat-primary: #ff8a65;
+            --cat-secondary: #ff7043;
+            --glass-bg: rgba(255, 255, 255, 0.25);
+            --glass-border: rgba(255, 255, 255, 0.18);
+            --shadow-soft: 0 8px 32px rgba(31, 38, 135, 0.37);
+            --shadow-hover: 0 15px 35px rgba(31, 38, 135, 0.5);
         }
         
         * {
@@ -54,7 +60,7 @@
         }
         
         body {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -62,45 +68,73 @@
             padding: 20px;
             color: var(--dark);
             background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
+            animation: gradientShift 20s ease infinite;
+            position: relative;
+            overflow-x: hidden;
         }
         
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 177, 153, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 119, 198, 0.2) 0%, transparent 50%);
+            z-index: -1;
+            animation: bgFloat 25s ease-in-out infinite;
+        }
+        
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            33% { background-position: 100% 50%; }
+            66% { background-position: 50% 100%; }
+        }
+        
+        @keyframes bgFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-20px) rotate(1deg); }
+            66% { transform: translateY(10px) rotate(-1deg); }
         }
         
         .container {
             width: 100%;
-            max-width: 500px;
-            background: var(--card-bg);
-            border-radius: 25px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+            max-width: 520px;
+            background: var(--glass-bg);
+            border-radius: 30px;
+            box-shadow: var(--shadow-soft);
             overflow: hidden;
-            transition: all 0.5s ease;
+            transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             position: relative;
-            z-index: 2;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            z-index: 10;
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            animation: containerEntry 1s ease-out;
         }
         
-        .container::before {
-            content: "";
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
-            z-index: -1;
-            pointer-events: none;
+        .container:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        @keyframes containerEntry {
+            from {
+                opacity: 0;
+                transform: translateY(50px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
         }
         
         .header {
-            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             color: white;
-            padding: 35px 25px;
+            padding: 40px 30px;
             text-align: center;
             position: relative;
             overflow: hidden;
@@ -109,188 +143,280 @@
         .header::before {
             content: "";
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
-            opacity: 0.2;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%),
+                url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            animation: headerPattern 30s linear infinite;
+        }
+        
+        @keyframes headerPattern {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 2;
         }
         
         .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 12px;
+            font-size: 2.8rem;
+            margin-bottom: 15px;
             font-weight: 800;
-            letter-spacing: -0.5px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-            position: relative;
-            z-index: 2;
+            letter-spacing: -1px;
+            text-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            animation: titleGlow 3s ease-in-out infinite alternate;
+        }
+        
+        @keyframes titleGlow {
+            from { text-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+            to { text-shadow: 0 4px 20px rgba(255,255,255,0.3), 0 4px 8px rgba(0,0,0,0.2); }
         }
         
         .header p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-            max-width: 80%;
+            font-size: 1.3rem;
+            opacity: 0.95;
+            max-width: 85%;
             margin: 0 auto;
-            position: relative;
-            z-index: 2;
+            line-height: 1.6;
+        }
+        
+        .cat-emoji {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            display: inline-block;
+            animation: catBounce 2s ease-in-out infinite;
+        }
+        
+        @keyframes catBounce {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
         }
         
         .content {
-            padding: 35px 30px;
+            padding: 40px 35px;
             position: relative;
         }
         
         .form-container, .data-container {
-            transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
         
-        .form-container h2, .welcome-text {
+        .section-title {
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 35px;
             color: var(--primary);
             font-weight: 700;
-            font-size: 1.8rem;
+            font-size: 2rem;
             position: relative;
-            padding-bottom: 15px;
+            padding-bottom: 20px;
         }
         
-        .form-container h2::after, .welcome-text::after {
+        .section-title::after {
             content: "";
             position: absolute;
             bottom: 0;
             right: 50%;
             transform: translateX(50%);
-            width: 80px;
+            width: 100px;
             height: 4px;
-            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+            background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
             border-radius: 10px;
+            animation: underlineGlow 2s ease-in-out infinite alternate;
         }
         
-        /* استايل نموذج الإدخال */
+        @keyframes underlineGlow {
+            from { box-shadow: 0 0 5px rgba(102, 126, 234, 0.5); }
+            to { box-shadow: 0 0 20px rgba(102, 126, 234, 0.8), 0 0 30px rgba(255, 107, 157, 0.3); }
+        }
+        
+        /* Enhanced Form Styles */
         .form-container {
             display: flex;
             flex-direction: column;
-            gap: 25px;
+            gap: 30px;
         }
         
         .input-group {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
         }
         
         .input-group label {
             font-weight: 600;
-            font-size: 1.1rem;
-            color: #555;
-            padding-right: 10px;
+            font-size: 1.2rem;
+            color: var(--dark);
+            padding-right: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         
         .input-wrapper {
             position: relative;
+            transform: translateY(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .input-wrapper:focus-within {
+            transform: translateY(-2px);
         }
         
         .input-group input {
-            padding: 16px 50px 16px 20px;
-            border: 2px solid #e0e0e0;
-            border-radius: 15px;
-            font-size: 1.1rem;
-            transition: all 0.3s;
+            padding: 20px 60px 20px 25px;
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            border-radius: 20px;
+            font-size: 1.2rem;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             width: 100%;
-            background: rgba(255, 255, 255, 0.8);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(10px);
         }
         
         .input-group input:focus {
             border-color: var(--primary);
             outline: none;
-            box-shadow: 0 0 0 4px rgba(106, 17, 203, 0.15);
+            box-shadow: 
+                0 0 0 4px rgba(102, 126, 234, 0.15),
+                0 8px 25px rgba(102, 126, 234, 0.2);
+            background: rgba(255, 255, 255, 1);
+            transform: scale(1.02);
         }
         
         .input-icon {
             position: absolute;
             top: 50%;
-            left: 18px;
+            left: 20px;
             transform: translateY(-50%);
-            color: #aaa;
-            font-size: 1.2rem;
+            color: var(--primary);
+            font-size: 1.3rem;
+            transition: all 0.3s ease;
+        }
+        
+        .input-wrapper:focus-within .input-icon {
+            color: var(--accent);
+            transform: translateY(-50%) scale(1.1);
         }
         
         .btn {
-            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
             color: white;
             border: none;
-            padding: 16px;
-            border-radius: 15px;
-            font-size: 1.2rem;
+            padding: 20px;
+            border-radius: 20px;
+            font-size: 1.3rem;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s;
-            margin-top: 10px;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            margin-top: 15px;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 10px 20px rgba(106, 17, 203, 0.2);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
         }
         
-        .btn::after {
+        .btn::before {
             content: '';
             position: absolute;
-            top: -50%;
-            left: -60%;
-            width: 40%;
-            height: 200%;
-            background: rgba(255, 255, 255, 0.3);
-            transform: rotate(25deg);
-            transition: all 0.6s;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.6s;
         }
         
         .btn:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 25px rgba(106, 17, 203, 0.3);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
         }
         
-        .btn:hover::after {
-            left: 120%;
+        .btn:hover::before {
+            left: 100%;
         }
         
-        .btn i {
-            margin-left: 8px;
+        .btn:active {
+            transform: translateY(-1px) scale(0.98);
         }
         
-        /* استايل عرض البيانات */
+        /* Enhanced Data Display */
         .data-container {
             display: none;
             flex-direction: column;
             align-items: center;
-            gap: 30px;
+            gap: 35px;
             text-align: center;
         }
         
         .avatar {
-            width: 130px;
-            height: 130px;
+            width: 150px;
+            height: 150px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            background: linear-gradient(135deg, var(--cat-primary) 0%, var(--cat-secondary) 100%);
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-top: -75px;
-            border: 5px solid white;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            margin-top: -85px;
+            border: 6px solid white;
+            box-shadow: 
+                0 15px 35px rgba(0, 0, 0, 0.2),
+                0 0 0 10px rgba(255, 138, 101, 0.1);
             position: relative;
             z-index: 3;
-            animation: pulse 2s infinite;
+            animation: avatarPulse 3s ease-in-out infinite;
         }
         
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0px rgba(106, 17, 203, 0.5); }
-            100% { box-shadow: 0 0 0 20px rgba(106, 17, 203, 0); }
+        @keyframes avatarPulse {
+            0%, 100% { 
+                box-shadow: 
+                    0 15px 35px rgba(0, 0, 0, 0.2),
+                    0 0 0 10px rgba(255, 138, 101, 0.1);
+            }
+            50% { 
+                box-shadow: 
+                    0 20px 40px rgba(0, 0, 0, 0.25),
+                    0 0 0 20px rgba(255, 138, 101, 0.2);
+            }
         }
         
         .avatar i {
-            font-size: 3.8rem;
+            font-size: 4.5rem;
             color: white;
+            text-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            animation: iconFloat 4s ease-in-out infinite;
+        }
+        
+        @keyframes iconFloat {
+            0%, 100% { transform: translateY(0px) rotate(-5deg); }
+            50% { transform: translateY(-5px) rotate(5deg); }
+        }
+        
+        .welcome-text {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-top: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            animation: welcomeGlow 3s ease-in-out infinite alternate;
+        }
+        
+        @keyframes welcomeGlow {
+            from { color: var(--primary); }
+            to { color: var(--accent); }
+        }
+        
+        .contact-instruction {
+            text-align: center;
+            margin-bottom: 25px;
+            color: var(--dark);
+            font-size: 1.2rem;
+            padding: 0 20px;
+            opacity: 0.8;
         }
         
         .user-info {
@@ -298,16 +424,17 @@
         }
         
         .info-card {
-            background: white;
-            border-radius: 18px;
-            padding: 22px;
-            margin: 18px 0;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            padding: 25px;
+            margin: 20px 0;
             text-align: right;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-            border-right: 5px solid var(--primary);
-            transition: transform 0.4s, box-shadow 0.4s;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             position: relative;
             overflow: hidden;
+            backdrop-filter: blur(15px);
         }
         
         .info-card::before {
@@ -315,202 +442,177 @@
             position: absolute;
             top: 0;
             right: 0;
-            width: 5px;
+            width: 6px;
             height: 100%;
-            background: linear-gradient(to bottom, var(--primary), var(--secondary));
+            background: linear-gradient(to bottom, var(--primary), var(--accent));
         }
         
         .info-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
         }
         
         .info-card h3 {
             color: var(--primary);
-            margin-bottom: 12px;
-            font-size: 1.3rem;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
+            font-weight: 600;
         }
         
         .info-card h3 i {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
+            color: var(--accent);
         }
         
         .info-card p {
-            font-size: 1.6rem;
+            font-size: 1.7rem;
             font-weight: 700;
             color: var(--dark);
             direction: ltr;
-        }
-        
-        .welcome-text {
-            font-size: 2rem;
-            font-weight: 800;
-            color: var(--primary);
-            margin-top: 10px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 10px 15px;
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 15px;
+            border: 2px dashed rgba(102, 126, 234, 0.2);
         }
         
         .action-btn {
-            background: white;
+            background: rgba(255, 255, 255, 0.9);
             color: var(--primary);
             border: 2px solid var(--primary);
-            padding: 14px 30px;
-            border-radius: 15px;
-            font-size: 1.1rem;
+            padding: 16px 35px;
+            border-radius: 20px;
+            font-size: 1.2rem;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s;
-            margin-top: 10px;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            margin-top: 15px;
             display: inline-flex;
             align-items: center;
-            gap: 10px;
-            box-shadow: 0 5px 15px rgba(106, 17, 203, 0.1);
+            gap: 12px;
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.15);
+            backdrop-filter: blur(10px);
         }
         
         .action-btn:hover {
             background: var(--primary);
             color: white;
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(106, 17, 203, 0.25);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.3);
         }
         
-        .footer {
-            text-align: center;
-            padding: 22px;
-            color: #777;
-            font-size: 0.95rem;
-            border-top: 1px solid #eee;
-            background: rgba(248, 249, 250, 0.8);
-        }
-        
-        .floating-element {
-            position: absolute;
-            z-index: 1;
-            opacity: 0.3;
-            animation: float 15s infinite linear;
-        }
-        
-        .circle {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background: linear-gradient(45deg, var(--accent), var(--cat-color));
-        }
-        
-        .triangle {
-            width: 0;
-            height: 0;
-            border-left: 50px solid transparent;
-            border-right: 50px solid transparent;
-            border-bottom: 87px solid var(--success);
-        }
-        
-        .cat-paw {
-            width: 80px;
-            height: 80px;
-            background: var(--cat-color);
-            border-radius: 50%;
-            position: relative;
-        }
-        
-        .cat-paw::before,
-        .cat-paw::after {
-            content: "";
-            position: absolute;
-            background: var(--cat-color);
-            border-radius: 50%;
-        }
-        
-        .cat-paw::before {
-            width: 50px;
-            height: 50px;
-            top: -20px;
-            left: 15px;
-        }
-        
-        .cat-paw::after {
-            width: 50px;
-            height: 50px;
-            top: -20px;
-            right: 15px;
-        }
-        
-        .cat-icon {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 30px;
-            height: 30px;
-            background: white;
-            border-radius: 50%;
-        }
-        
-        @keyframes float {
-            0% { transform: translate(0, 0) rotate(0deg); }
-            25% { transform: translate(20px, 40px) rotate(90deg); }
-            50% { transform: translate(40px, 0) rotate(180deg); }
-            75% { transform: translate(20px, -40px) rotate(270deg); }
-            100% { transform: translate(0, 0) rotate(360deg); }
-        }
-        
-        .contact-instruction {
-            text-align: center;
-            margin-top: -15px;
-            margin-bottom: 25px;
-            color: #555;
-            font-size: 1.1rem;
-            padding: 0 20px;
-        }
-        
+        /* Enhanced Cat Info Box */
         .cat-info {
-            background: #fff9f7;
-            border-radius: 15px;
-            padding: 15px;
-            margin-top: 20px;
+            background: linear-gradient(135deg, rgba(255, 138, 101, 0.1) 0%, rgba(255, 112, 67, 0.1) 100%);
+            border-radius: 25px;
+            padding: 25px;
+            margin: 25px 0;
             text-align: center;
-            border: 2px dashed var(--cat-color);
+            border: 2px solid rgba(255, 138, 101, 0.2);
+            box-shadow: 0 8px 25px rgba(255, 138, 101, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cat-info::before {
+            content: "🐾";
+            position: absolute;
+            top: 10px;
+            left: 15px;
+            font-size: 1.5rem;
+            opacity: 0.3;
+            animation: pawPrint 3s ease-in-out infinite;
+        }
+        
+        @keyframes pawPrint {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.1) rotate(5deg); }
+        }
+        
+        .cat-info:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(255, 138, 101, 0.2);
         }
         
         .cat-info h4 {
             color: var(--primary);
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 12px;
+            font-size: 1.3rem;
+            font-weight: 600;
         }
         
         .cat-info p {
-            color: #666;
-            line-height: 1.6;
+            color: var(--dark);
+            line-height: 1.8;
+            font-size: 1.1rem;
+            opacity: 0.9;
         }
         
-        .storage-info {
-            background: #e8f4ff;
-            border-radius: 12px;
-            padding: 12px;
-            margin-top: 20px;
-            text-align: center;
-            font-size: 0.9rem;
-            color: #2c6db3;
-            border: 1px solid #a9d0ff;
+        /* Floating Elements */
+        .floating-element {
+            position: fixed;
+            z-index: 1;
+            opacity: 0.15;
+            pointer-events: none;
         }
         
+        .floating-cat {
+            font-size: 2rem;
+            animation: floatCat 20s infinite linear;
+        }
+        
+        .floating-heart {
+            font-size: 1.5rem;
+            color: var(--accent);
+            animation: floatHeart 15s infinite linear;
+        }
+        
+        .floating-paw {
+            font-size: 1.8rem;
+            color: var(--cat-primary);
+            animation: floatPaw 18s infinite linear;
+        }
+        
+        @keyframes floatCat {
+            0% { transform: translate(-100px, 100vh) rotate(0deg); }
+            100% { transform: translate(100vw, -100px) rotate(360deg); }
+        }
+        
+        @keyframes floatHeart {
+            0% { transform: translate(100vw, 100vh) rotate(0deg) scale(0.5); }
+            50% { transform: translate(50vw, 50vh) rotate(180deg) scale(1); }
+            100% { transform: translate(-100px, -100px) rotate(360deg) scale(0.5); }
+        }
+        
+        @keyframes floatPaw {
+            0% { transform: translate(-100px, -100px) rotate(0deg); }
+            25% { transform: translate(100vw, 30vh) rotate(90deg); }
+            50% { transform: translate(50vw, 100vh) rotate(180deg); }
+            75% { transform: translate(0, 70vh) rotate(270deg); }
+            100% { transform: translate(-100px, -100px) rotate(360deg); }
+        }
+        
+        /* Loading Animation */
         .loading {
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 30px;
+            flex-direction: column;
+            gap: 15px;
         }
         
         .spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid rgba(106, 17, 203, 0.2);
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(102, 126, 234, 0.2);
             border-radius: 50%;
             border-top: 4px solid var(--primary);
             animation: spin 1s linear infinite;
@@ -521,56 +623,127 @@
             100% { transform: rotate(360deg); }
         }
         
+        .loading-text {
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 25px;
+            color: rgba(45, 55, 72, 0.7);
+            font-size: 0.95rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(248, 250, 252, 0.5);
+            backdrop-filter: blur(10px);
+        }
+        
+        /* Storage Info */
+        .storage-info {
+            background: linear-gradient(135deg, rgba(78, 205, 196, 0.1) 0%, rgba(102, 126, 234, 0.1) 100%);
+            border-radius: 20px;
+            padding: 18px;
+            margin-top: 25px;
+            text-align: center;
+            font-size: 0.95rem;
+            color: var(--primary);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            backdrop-filter: blur(10px);
+        }
+        
+        /* Responsive Design */
         @media (max-width: 480px) {
             .header h1 {
-                font-size: 2rem;
+                font-size: 2.2rem;
             }
             
             .header p {
-                font-size: 1rem;
+                font-size: 1.1rem;
             }
             
             .content {
-                padding: 25px 20px;
+                padding: 30px 25px;
             }
             
             .avatar {
-                width: 110px;
-                height: 110px;
-                margin-top: -65px;
+                width: 130px;
+                height: 130px;
+                margin-top: -75px;
             }
             
             .avatar i {
-                font-size: 3rem;
+                font-size: 3.5rem;
             }
             
             .welcome-text {
-                font-size: 1.7rem;
+                font-size: 1.9rem;
             }
             
             .info-card p {
-                font-size: 1.4rem;
+                font-size: 1.5rem;
             }
+            
+            .section-title {
+                font-size: 1.7rem;
+            }
+        }
+        
+        /* Custom Animations */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .slide-in-up {
+            animation: slideInUp 0.6s ease-out forwards;
+        }
+        
+        .slide-in-right {
+            animation: slideInRight 0.6s ease-out forwards;
         }
     </style>
 </head>
 <body>
-    <!-- عناصر عائمة للخلفية -->
-    <div class="floating-element circle" style="top: 10%; left: 5%; animation-duration: 20s;"></div>
-    <div class="floating-element cat-paw" style="top: 70%; left: 80%; animation-duration: 25s; animation-delay: -5s;"></div>
-    <div class="floating-element circle" style="top: 40%; left: 85%; width: 70px; height: 70px; animation-duration: 18s; animation-delay: -3s;"></div>
+    <!-- Floating Elements -->
+    <div class="floating-element floating-cat" style="top: 20%; left: 10%;">🐱</div>
+    <div class="floating-element floating-heart" style="top: 60%; left: 85%;">💖</div>
+    <div class="floating-element floating-paw" style="top: 30%; left: 90%;">🐾</div>
+    <div class="floating-element floating-cat" style="top: 80%; left: 5%;">😺</div>
+    <div class="floating-element floating-heart" style="top: 10%; left: 80%;">💕</div>
     
     <div class="container">
         <div class="header">
-            <h1>قطتي الضائعة</h1>
-            <p>إذا وجدت قطتي الضائعة، الرجاء الاتصال بي على البيانات التالية</p>
+            <div class="header-content">
+                <div class="cat-emoji">🐱💫</div>
+                <h1>قطتي الضائعة</h1>
+                <p>إذا وجدت قطتي الضائعة، الرجاء الاتصال بي على البيانات التالية</p>
+            </div>
         </div>
         
         <div class="content">
-            <!-- نموذج الإدخال للزيارة الأولى -->
+            <!-- Form Container -->
             <div class="form-container" id="formContainer">
-                <h2>بيانات الاتصال</h2>
-                <div class="input-group">
+                <h2 class="section-title">بيانات الاتصال</h2>
+                <div class="input-group slide-in-up">
                     <label for="name"><i class="fas fa-user"></i> اسمك:</label>
                     <div class="input-wrapper">
                         <input type="text" id="name" placeholder="أدخل اسمك هنا" required>
@@ -578,7 +751,7 @@
                     </div>
                 </div>
                 
-                <div class="input-group">
+                <div class="input-group slide-in-up" style="animation-delay: 0.1s;">
                     <label for="phone"><i class="fas fa-mobile-alt"></i> رقم هاتفك:</label>
                     <div class="input-wrapper">
                         <input type="tel" id="phone" placeholder="أدخل رقم هاتفك" required>
@@ -586,285 +759,20 @@
                     </div>
                 </div>
                 
-                <div class="cat-info">
-                    <h4><i class="fas fa-cat"></i> معلومات عن قطتي</h4>
+                <div class="cat-info slide-in-up" style="animation-delay: 0.2s;">
+                    <h4><i class="fas fa-info-circle"></i> معلومات عن قطتي</h4>
                     <p>قطتي أنثى، لونها رمادي، عمرها سنتين. فقدتها في منطقة الرياض، حي النخيل. لديها طوق أحمر مكتوب عليه اسمي.</p>
                 </div>
                 
-                <button class="btn" id="saveBtn">
-                    حفظ البيانات <i class="fas fa-save"></i>
+                <button class="btn slide-in-up" id="saveBtn" style="animation-delay: 0.3s;">
+                    <i class="fas fa-save"></i> حفظ البيانات
                 </button>
                 
-                <div class="storage-info">
-                    <i class="fas fa-database"></i> يتم تخزين البيانات باستخدام Firestore للتخزين السحابي الآمن
+                <div class="storage-info slide-in-up" style="animation-delay: 0.4s;">
+                    <i class="fas fa-cloud"></i> يتم تخزين البيانات باستخدام Firestore للتخزين السحابي الآمن
                 </div>
             </div>
             
-            <!-- عرض البيانات للزيارات التالية -->
+            <!-- Data Container -->
             <div class="data-container" id="dataContainer">
                 <div class="avatar">
-                    <i class="fas fa-cat"></i>
-                </div>
-                
-                <h2 class="welcome-text">شكرًا لك!</h2>
-                <p class="contact-instruction">إذا وجدت قطتي، الرجاء الاتصال بي على:</p>
-                
-                <div class="user-info">
-                    <div class="info-card">
-                        <h3><i class="fas fa-user-tag"></i> اسمي:</h3>
-                        <p id="displayName">محمد أحمد</p>
-                    </div>
-                    
-                    <div class="info-card">
-                        <h3><i class="fas fa-phone-alt"></i> رقم هاتفي:</h3>
-                        <p id="displayPhone">+966 50 123 4567</p>
-                    </div>
-                </div>
-                
-                <div class="cat-info">
-                    <h4><i class="fas fa-info-circle"></i> معلومات عن القطة</h4>
-                    <p>أنثى، لونها رمادي، عمرها سنتين. فقدت في منطقة الرياض، حي النخيل. ترتدي طوقًا أحمر مكتوب عليه اسمي.</p>
-                </div>
-                
-                <button class="action-btn" id="editBtn">
-                    <i class="fas fa-edit"></i> تعديل البيانات
-                </button>
-                
-                <div class="storage-info">
-                    <i class="fas fa-database"></i> يتم تخزين البيانات باستخدام Firestore للتخزين السحابي الآمن
-                </div>
-            </div>
-            
-            <!-- حالة التحميل -->
-            <div class="loading" id="loading" style="display: none;">
-                <div class="spinner"></div>
-                <span style="margin-right: 10px;">جاري تحميل البيانات...</span>
-            </div>
-        </div>
-        
-        <div class="footer">
-            تم التطوير لمساعدة من يجد القطط الضائعة | التخزين باستخدام Firestore
-        </div>
-    </div>
-    
-    <script>
-        document.addEventListener('DOMContentLoaded', async function() {
-            // Wait for Firebase to initialize
-            while (!window.firestore) {
-                await new Promise(resolve => setTimeout(resolve, 100));
-            }
-            
-            const { db, doc, getDoc, setDoc } = window.firestore;
-            
-            const formContainer = document.getElementById('formContainer');
-            const dataContainer = document.getElementById('dataContainer');
-            const loading = document.getElementById('loading');
-            const displayName = document.getElementById('displayName');
-            const displayPhone = document.getElementById('displayPhone');
-            const nameInput = document.getElementById('name');
-            const phoneInput = document.getElementById('phone');
-            const saveBtn = document.getElementById('saveBtn');
-            const editBtn = document.getElementById('editBtn');
-            
-            // Reference to Firestore document
-            const docRef = doc(db, "catOwners", "currentOwner1");
-            
-            // Show loading state
-            formContainer.style.display = 'none';
-            dataContainer.style.display = 'none';
-            loading.style.display = 'flex';
-            
-            try {
-                // Try to get data from Firestore
-                const docSnap = await getDoc(docRef);
-                
-                if (docSnap.exists()) {
-                    // Data exists - show data container
-                    const data = docSnap.data();
-                    displayName.textContent = data.name || 'غير متوفر';
-                    displayPhone.textContent = data.phone || 'غير متوفر';
-                    dataContainer.style.display = 'flex';
-                } else {
-                    // No data - show form
-                    formContainer.style.display = 'flex';
-                }
-            } catch (error) {
-                // Error handling
-                console.error("حدث خطأ في جلب البيانات:", error);
-                
-                // Show error message
-                const errorMsg = document.createElement('div');
-                errorMsg.innerHTML = '<i class="fas fa-exclamation-triangle"></i> فشل في تحميل البيانات، الرجاء المحاولة لاحقًا';
-                errorMsg.style.cssText = `
-                    background: var(--accent);
-                    color: white;
-                    padding: 15px;
-                    border-radius: 10px;
-                    text-align: center;
-                    margin: 20px;
-                    font-weight: bold;
-                `;
-                document.querySelector('.content').appendChild(errorMsg);
-                
-                // Show form as fallback
-                formContainer.style.display = 'flex';
-            } finally {
-                // Hide loading state
-                loading.style.display = 'none';
-            }
-            
-            // Save button event listener
-            saveBtn.addEventListener('click', async function() {
-                const name = nameInput.value;
-                const phone = phoneInput.value;
-                
-                if (!name || !phone) {
-                    // Show error animation
-                    const inputs = document.querySelectorAll('input');
-                    inputs.forEach(input => {
-                        if (!input.value) {
-                            input.style.borderColor = 'var(--accent)';
-                            input.style.animation = 'shake 0.5s';
-                            
-                            setTimeout(() => {
-                                input.style.animation = '';
-                            }, 500);
-                        }
-                    });
-                    
-                    // Create alert message
-                    const alertMsg = document.createElement('div');
-                    alertMsg.innerHTML = '<i class="fas fa-exclamation-circle"></i> الرجاء إدخال جميع البيانات المطلوبة';
-                    alertMsg.style.cssText = `
-                        position: fixed;
-                        top: 20px;
-                        right: 20px;
-                        background: var(--accent);
-                        color: white;
-                        padding: 15px 25px;
-                        border-radius: 10px;
-                        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-                        z-index: 1000;
-                        animation: slideIn 0.5s, fadeOut 0.5s 2.5s;
-                    `;
-                    
-                    document.body.appendChild(alertMsg);
-                    
-                    setTimeout(() => {
-                        alertMsg.remove();
-                    }, 3000);
-                    return;
-                }
-                
-                try {
-                    // Show saving state
-                    const originalBtnText = saveBtn.innerHTML;
-                    saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الحفظ...';
-                    saveBtn.disabled = true;
-                    
-                    // Save to Firestore
-                    await setDoc(docRef, {
-                        name: name,
-                        phone: phone,
-                        timestamp: new Date()
-                    });
-                    
-                    // Show success animation
-                    saveBtn.innerHTML = '<i class="fas fa-check"></i> تم الحفظ!';
-                    saveBtn.style.background = 'linear-gradient(90deg, var(--success), #01c896)';
-                    
-                    setTimeout(() => {
-                        // Reset button
-                        saveBtn.innerHTML = originalBtnText;
-                        saveBtn.style.background = 'linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%)';
-                        saveBtn.disabled = false;
-                        
-                        // Show data container
-                        formContainer.style.display = 'none';
-                        dataContainer.style.display = 'flex';
-                        displayName.textContent = name;
-                        displayPhone.textContent = phone;
-                    }, 1500);
-                } catch (error) {
-                    console.error("حدث خطأ في حفظ البيانات:", error);
-                    
-                    // Show error message
-                    const alertMsg = document.createElement('div');
-                    alertMsg.innerHTML = '<i class="fas fa-exclamation-triangle"></i> فشل في حفظ البيانات، الرجاء المحاولة لاحقًا';
-                    alertMsg.style.cssText = `
-                        position: fixed;
-                        top: 20px;
-                        right: 20px;
-                        background: var(--accent);
-                        color: white;
-                        padding: 15px 25px;
-                        border-radius: 10px;
-                        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-                        z-index: 1000;
-                    `;
-                    
-                    document.body.appendChild(alertMsg);
-                    
-                    setTimeout(() => {
-                        alertMsg.remove();
-                    }, 3000);
-                    
-                    // Reset button
-                    saveBtn.innerHTML = originalBtnText;
-                    saveBtn.disabled = false;
-                }
-            });
-            
-            // Edit button event listener
-            editBtn.addEventListener('click', function() {
-                // Add fade out effect
-                dataContainer.style.animation = 'fadeOut 0.5s';
-                
-                setTimeout(() => {
-                    // Show form
-                    formContainer.style.display = 'flex';
-                    dataContainer.style.display = 'none';
-                    dataContainer.style.animation = '';
-                    
-                    // Prefill form with current data
-                    nameInput.value = displayName.textContent;
-                    phoneInput.value = displayPhone.textContent;
-                    
-                    // Add fade in effect to form
-                    formContainer.style.animation = 'fadeIn 0.5s';
-                    
-                    setTimeout(() => {
-                        formContainer.style.animation = '';
-                    }, 500);
-                }, 500);
-            });
-            
-            // Add animation styles
-            const style = document.createElement('style');
-            style.innerHTML = `
-                @keyframes shake {
-                    0%, 100% { transform: translateX(0); }
-                    20%, 60% { transform: translateX(-10px); }
-                    40%, 80% { transform: translateX(10px); }
-                }
-                
-                @keyframes slideIn {
-                    from { transform: translateX(100px); opacity: 0; }
-                    to { transform: translateX(0); opacity: 1; }
-                }
-                
-                @keyframes fadeOut {
-                    from { opacity: 1; transform: translateY(0); }
-                    to { opacity: 0; transform: translateY(-20px); }
-                }
-                
-                @keyframes fadeIn {
-                    from { opacity: 0; transform: translateY(-20px); }
-                    to { opacity: 1; transform: translateY(0); }
-                }
-            `;
-            document.head.appendChild(style);
-        });
-    </script>
-</body>
-</html>
